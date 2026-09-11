@@ -33,7 +33,17 @@ function LoginPage() {
     const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
     setLoading(false);
     if (error) {
-      setError('Identifiants incorrects. Si c\'est votre première connexion, utilisez « Créer le compte ».');
+      // Supabase renvoie la meme categorie d'erreur pour un mot de passe faux et
+      // pour un compte dont l'adresse n'est pas confirmee. Les distinguer evite
+      // d'envoyer quelqu'un chercher un probleme de mot de passe inexistant.
+      const notConfirmed =
+        (error as { code?: string }).code === 'email_not_confirmed' ||
+        /not confirmed/i.test(error.message);
+      setError(
+        notConfirmed
+          ? "Ce compte existe, mais son adresse e-mail n'a pas encore été confirmée. Ouvrez le lien reçu par e-mail, puis réessayez."
+          : "Identifiants incorrects. Si c'est votre première connexion, utilisez « Créer le compte ».",
+      );
       return;
     }
     navigate({ to: '/admin' });
