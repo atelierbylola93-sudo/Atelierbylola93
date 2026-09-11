@@ -1,0 +1,257 @@
+@import "tailwindcss" source(none);
+@source "../src";
+
+
+@theme {
+  --color-cream: #EFE7D2;
+  --color-beige-bg: #EFE7D2;
+  --color-beige-lin: #DDCCB2;
+  --color-champagne: #B88F4D;
+  --color-dore: #B88F4D;
+  --color-taupe: #A17E60;
+  --color-sage: #A3A485;
+  --color-vert-gris: #9FA392;
+  --color-charcoal: #2A2621;
+  --color-secondary-gray: #565656;
+
+  --font-serif: "Playfair Display", Georgia, serif;
+  --font-sans: "Inter", system-ui, -apple-system, sans-serif;
+  --font-signature: "Great Vibes", cursive;
+
+  --radius-premium: 24px;
+
+  /* Custom fluid text sizes used across views (Tailwind v4 auto-generates text-* utilities from --text-*) */
+  --text-2\.5xl: 1.6875rem;   /* 27px */
+  --text-3\.5xl: 2rem;        /* 32px */
+  --text-4\.5xl: 2.5rem;      /* 40px */
+
+  /* Custom spacing steps */
+  --spacing-4\.5: 1.125rem;   /* 18px → py-4.5 */
+}
+
+
+@utility font-serif {
+  font-family: var(--font-serif);
+}
+
+@utility font-sans {
+  font-family: var(--font-sans);
+}
+
+@utility font-signature {
+  font-family: var(--font-signature);
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+  body {
+    background-color: #EFE7D2;
+    color: #1E1E1E;
+    font-family: "Inter", system-ui, -apple-system, sans-serif;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-text-size-adjust: 100%;
+    -webkit-tap-highlight-color: transparent;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+    padding-left: env(safe-area-inset-left, 0px);
+    padding-right: env(safe-area-inset-right, 0px);
+  }
+  
+  /* Custom elegant scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #EFE7D2;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #DDCCB2;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #B88F4D;
+  }
+}
+
+/* Glassmorphic effect */
+.glass-premium {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+}
+
+.glass-dark {
+  background: rgba(30, 30, 30, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Artistic Flair Theme utilities */
+.glass-header {
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(184, 143, 77, 0.12);
+}
+
+.gold-text {
+  color: #B88F4D;
+}
+
+.sage-bg {
+  background-color: #A3A485;
+}
+
+.card-rounded {
+  border-radius: 24px;
+}
+
+.premium-shadow {
+  box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+}
+
+.hover-lift {
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-4px);
+}
+
+.btn-primary {
+  background-color: #B88F4D;
+  color: #FFFFFF;
+  border-radius: 100px;
+  padding: 16px 36px;
+  min-height: 54px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 4px 14px 0 rgba(184, 143, 77, 0.15);
+}
+
+.btn-primary:hover {
+  background-color: #A17E60;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px 0 rgba(184, 143, 77, 0.3);
+}
+
+.btn-secondary {
+  border: 1px solid #B88F4D;
+  color: #B88F4D;
+  border-radius: 100px;
+  padding: 16px 36px;
+  min-height: 54px;
+  font-weight: 600;
+  font-size: 0.78rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background-color: transparent;
+  box-shadow: 0 4px 12px 0 rgba(0, 0, 0, 0.02);
+}
+
+.btn-secondary:hover {
+  background-color: rgba(184, 143, 77, 0.05);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px 0 rgba(184, 143, 77, 0.1);
+}
+
+/* ============================================================
+   MÜLLER-BROCKMANN & VIGNELLI SWISS GRID SYSTEM OVERLAY
+   ============================================================ */
+:root {
+  --cols: 12;
+  --bl: 8px;                        /* baseline unit */
+  --lh: 24px;                       /* leading = 3 x baseline */
+  --gutter: 24px;
+  --margin: 48px;
+  
+  --g-col: rgba(184, 143, 77, 0.035); /* elegant champagne tint */
+  --g-edge: rgba(184, 143, 77, 0.15);
+  --g-base: rgba(163, 164, 133, 0.08); /* sage major baseline line (24px) */
+  --g-base-min: rgba(163, 164, 133, 0.03); /* sage minor baseline line (8px) */
+}
+
+@media (max-width: 768px) {
+  :root {
+    --margin: 16px;
+    --gutter: 12px;
+  }
+}
+
+.grid-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 45; /* Sit right below floating action layers and menus but on top of views */
+  opacity: 0;
+  transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body.grid-on .grid-overlay {
+  opacity: 1;
+}
+
+/* 12 Columns matching exactly the centered container grid boundaries */
+.grid-overlay-cols {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--margin);
+  right: var(--margin);
+  display: grid;
+  grid-template-columns: repeat(var(--cols), 1fr);
+  column-gap: var(--gutter);
+}
+
+.grid-overlay-col {
+  background: var(--g-col);
+  box-shadow: inset 1.5px 0 0 var(--g-edge), inset -1.5px 0 0 var(--g-edge);
+  position: relative;
+  height: 100%;
+}
+
+.grid-overlay-col span {
+  position: absolute;
+  top: 100px; /* Offset from header area */
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: monospace;
+  font-size: 8px;
+  letter-spacing: 0.1em;
+  font-weight: bold;
+  color: #B88F4D;
+  opacity: 0.6;
+}
+
+/* 8px vertical baseline and 24px major horizontal grids for vertical rhythm verification */
+.grid-overlay-rows {
+  position: absolute;
+  left: var(--margin);
+  right: var(--margin);
+  top: 0;
+  bottom: 0;
+  background-image: 
+    repeating-linear-gradient(to bottom, var(--g-base) 0 1px, transparent 1px var(--lh)),
+    repeating-linear-gradient(to bottom, var(--g-base-min) 0 1px, transparent 1px var(--bl));
+}
+
+
