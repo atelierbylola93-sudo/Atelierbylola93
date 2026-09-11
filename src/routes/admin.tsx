@@ -44,6 +44,7 @@ function AdminPage() {
   const [userEmail, setUserEmail] = useState('');
   const [manualOpen, setManualOpen] = useState(false);
   const [manualPrefill, setManualPrefill] = useState<{ date?: string; time?: string } | undefined>();
+  const [sessionReady, setSessionReady] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -67,6 +68,18 @@ function AdminPage() {
     }
   }, [list, navigate]);
 
+  // Recharge la liste sans afficher l'etat de chargement : un evenement temps
+  // reel ne doit pas faire clignoter l'ecran du patron.
+  const refreshSilently = useCallback(async () => {
+    try {
+      const { reservations } = await list();
+      setItems(reservations as unknown as AdminReservation[]);
+    } catch {
+      // Un rafraichissement rate est sans consequence : le prochain evenement
+      // ou le bouton Actualiser reprendra la main.
+    }
+  }, [list]);
+
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
       if (!data.session) {
@@ -74,9 +87,42 @@ function AdminPage() {
         return;
       }
       setUserEmail(data.session.user.email ?? '');
+      setSessionReady(true);
       load();
     });
   }, [navigate, load]);
+
+  // Temps reel : Supabase pousse chaque changement de la table reservations.
+  // On attend que la session soit etablie, sinon les regles RLS rejettent
+  // l'abonnement et le canal reste muet.
+  useEffect(() => {
+    if (!sessionReady) return;
+
+    const channel = supabase
+      .channel('admin-reservations')
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'reservations' },
+        (payload) => {
+          if (payload.eventType === 'INSERT') {
+            const r = payload.new as Partial<AdminReservation>;
+            toast.success(`Nouvelle reservation — ${r.client_name ?? ''}`, {
+              description:
+                r.appointment_date && r.appointment_time
+                  ? `${r.appointment_date} a ${r.appointment_time}`
+                  : undefined,
+              duration: 8000,
+            });
+          }
+          refreshSilently();
+        },
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [sessionReady, refreshSilently]);
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
