@@ -1,5 +1,7 @@
 import { pagePath } from '../lib/seo';
 import { INSTITUT_INFO, NAV_ITEMS } from '../data';
+import { useHoraires } from '../lib/use-horaires';
+import { resumerHorairesCourt } from '../lib/opening-hours';
 import { Page } from '../types';
 import SchemaLocalBusiness from './SchemaLocalBusiness';
 import { MapPin, Phone, Clock, Instagram, Send, Star } from 'lucide-react';
@@ -9,6 +11,9 @@ interface FooterProps {
 }
 
 export default function Footer({ onNavigate }: FooterProps) {
+  // Repli sur le texte statique si la base n'a pas repondu.
+  const horairesTexte = resumerHorairesCourt(useHoraires()) || INSTITUT_INFO.hours;
+
   const handleLinkClick = (page: Page) => {
     onNavigate(page);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -51,7 +56,7 @@ export default function Footer({ onNavigate }: FooterProps) {
               </div>
               <div className="flex items-start gap-3">
                 <Clock className="h-5 w-5 text-[#B88F4D] shrink-0 mt-0.5" />
-                <span>{INSTITUT_INFO.hours}</span>
+                <span>{horairesTexte}</span>
               </div>
             </div>
           </div>

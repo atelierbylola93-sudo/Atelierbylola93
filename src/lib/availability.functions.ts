@@ -16,6 +16,23 @@ function toHHMM(mins: number): string {
 }
 
 /**
+ * Public : horaires hebdomadaires de l'institut.
+ *
+ * Ils étaient écrits en dur dans le site et contredisaient la base. Les lire
+ * ici fait de l'écran « Disponibilités » la seule source de vérité : ce que
+ * Lola y règle s'affiche partout, y compris dans les données envoyées à Google.
+ */
+export const getBusinessHoursPublic = createServerFn({ method: 'GET' }).handler(async () => {
+  const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+  const { data, error } = await supabaseAdmin
+    .from('business_hours')
+    .select('weekday,is_open,open_time,close_time,break_start,break_end')
+    .order('weekday', { ascending: true });
+  if (error) throw new Error(error.message);
+  return { hours: data ?? [] };
+});
+
+/**
  * Public: returns for each day of the given month whether the salon is open.
  * Never exposes the reason of a closure.
  */

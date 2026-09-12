@@ -10,6 +10,8 @@ import {
 import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
+import { getBusinessHoursPublic } from "../lib/availability.functions";
+import type { JourOuverture } from "../lib/opening-hours";
 
 function NotFoundComponent() {
   return (
@@ -99,6 +101,20 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       },
     ],
   }),
+  // Les horaires sont chargés une fois pour toute l'application : le pied de
+  // page, le bloc contact et les données structurées y puisent. Un échec ne
+  // doit jamais empêcher le site de s'afficher — on rend alors une liste vide
+  // et chaque composant retombe sur son texte de repli.
+  loader: async (): Promise<{ hours: JourOuverture[] }> => {
+    try {
+      const { hours } = await getBusinessHoursPublic();
+      return { hours: hours as JourOuverture[] };
+    } catch (error) {
+      console.error('[horaires] lecture impossible', error);
+      return { hours: [] };
+    }
+  },
+  staleTime: 5 * 60 * 1000,
   shellComponent: RootShell,
   component: RootComponent,
   notFoundComponent: NotFoundComponent,

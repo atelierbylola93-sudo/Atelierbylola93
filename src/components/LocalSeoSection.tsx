@@ -1,4 +1,6 @@
 import { INSTITUT_INFO } from '../data';
+import { useHoraires } from '../lib/use-horaires';
+import { resumerHoraires } from '../lib/opening-hours';
 import { MapPin, Phone, Clock, Navigation } from 'lucide-react';
 
 interface LocalSeoSectionProps {
@@ -19,6 +21,8 @@ export default function LocalSeoSection({
   url,
   accent = '#B88F4D',
 }: LocalSeoSectionProps) {
+  const lignesHoraires = resumerHoraires(useHoraires());
+
   const serviceSchema = {
     '@context': 'https://schema.org',
     '@type': 'Service',
@@ -110,8 +114,16 @@ export default function LocalSeoSection({
             <div>
               <h3 className="text-sm font-semibold text-charcoal mb-1">Horaires</h3>
               <p className="text-sm text-secondary-gray leading-relaxed">
-                Lundi – Dimanche<br />
-                9h00 – 20h00<br />
+                {lignesHoraires.length > 0 ? (
+                  lignesHoraires.map((l) => (
+                    <span key={l}>
+                      {l}
+                      <br />
+                    </span>
+                  ))
+                ) : (
+                  <span>{INSTITUT_INFO.hours}</span>
+                )}
                 <span className="text-xs">Sur rendez-vous uniquement</span>
               </p>
             </div>

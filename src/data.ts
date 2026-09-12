@@ -11,7 +11,10 @@ export const INSTITUT_INFO = {
   phone: "06 60 10 04 31",
   phoneFormatted: "+33660100431",
   planityUrl: "/reservation", // Internal reservation system
-  hours: "Du lundi au dimanche sur rendez-vous (9h00 - 20h00)",
+  // Repli affiché uniquement si la lecture des horaires en base échoue :
+  // volontairement non-engageant, pour ne jamais annoncer un jour ou une heure
+  // qui contredirait le moteur de réservation.
+  hours: "Sur rendez-vous",
   instagram: "@atelier_by.lola",
   instagramUrl: "https://instagram.com/atelier_by.lola",
   tiktok: "@latelier.by.lola",

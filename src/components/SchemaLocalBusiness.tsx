@@ -1,6 +1,10 @@
 import { INSTITUT_INFO } from '../data';
+import { useHoraires } from '../lib/use-horaires';
+import { horairesJsonLd } from '../lib/opening-hours';
 
 export default function SchemaLocalBusiness() {
+  const specifications = horairesJsonLd(useHoraires());
+
   const schema = {
     "@context": "https://schema.org",
     "@type": "BeautySalon",
@@ -22,20 +26,9 @@ export default function SchemaLocalBusiness() {
       "latitude": 48.8843, 
       "longitude": 2.4047
     },
-    "openingHoursSpecification": {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": [
-        "Monday",
-        "Tuesday",
-        "Wednesday",
-        "Thursday",
-        "Friday",
-        "Saturday",
-        "Sunday"
-      ],
-      "opens": "09:00",
-      "closes": "20:00"
-    },
+    // Déclaré à Google. Annoncer une ouverture le dimanche quand l'institut est
+    // fermé envoie des clientes devant une porte close : la source est la base.
+    "openingHoursSpecification": specifications,
     "sameAs": [
       INSTITUT_INFO.instagramUrl,
       INSTITUT_INFO.tiktokUrl
