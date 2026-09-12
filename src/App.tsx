@@ -3,6 +3,7 @@ import { useNavigate } from '@tanstack/react-router';
 import { pagePath } from './lib/seo';
 import { motion, AnimatePresence } from 'motion/react';
 import { Page } from './types';
+import imageDeRepli from './assets/hero-spa-wellness.webp';
 
 // Import Layout Components
 import Header from './components/Header';
@@ -26,6 +27,22 @@ import ConfidentialiteView from './views/ConfidentialiteView';
 
 export default function App({ currentPage = 'accueil' }: { currentPage?: Page }) {
   const navigate = useNavigate();
+
+  // Filet de sécurité sur les images distantes. Une illustration hébergée chez
+  // un tiers peut être retirée sans préavis — c'est arrivé à la carte « Soin
+  // Visage Bio ». Plutôt qu'une icône cassée sur une page de vente, on bascule
+  // sur un visuel local. L'écoute se fait en phase de capture : les erreurs de
+  // chargement d'image ne remontent pas la hiérarchie.
+  useEffect(() => {
+    const surErreur = (e: Event) => {
+      const el = e.target as HTMLImageElement;
+      if (!el || el.tagName !== 'IMG' || el.dataset.repliApplique) return;
+      el.dataset.repliApplique = '1';
+      el.src = imageDeRepli;
+    };
+    document.addEventListener('error', surErreur, true);
+    return () => document.removeEventListener('error', surErreur, true);
+  }, []);
   useEffect(() => {
     const legacy = window.location.hash.slice(2) as Page;
     const pages = ['accueil', 'coiffure', 'head-spa', 'soins-visage', 'beaute-regard', 'ipl', 'detatouage', 'blanchiment-dentaire', 'soins-corps-algues', 'reservation', 'mentions-legales', 'confidentialite'];

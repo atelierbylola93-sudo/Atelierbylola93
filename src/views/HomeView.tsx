@@ -16,6 +16,7 @@ import {
 import { INSTITUT_INFO, LUXURY_IMAGES } from '../data';
 import { Page } from '../types';
 import heroSpaWellnessAsset from '../assets/hero-spa-wellness.webp';
+import soinVisageAsset from '../assets/ba-hydrafacial-after.webp';
 
 interface HomeViewProps {
   onNavigate: (page: Page) => void;
@@ -113,7 +114,9 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
       effets: "★★★★☆",
       duration: "45 min",
       price: "60 €",
-      image: "https://images.unsplash.com/photo-1616394584738-fc6e612e2ef8?auto=format&fit=crop&q=80&w=800",
+      // L'illustration distante renvoyait un 404 : la photo avait été retirée
+      // de la banque d'images. Un visuel local ne peut pas disparaître.
+      image: soinVisageAsset,
       action: "soins-visage" as Page
     },
     {
