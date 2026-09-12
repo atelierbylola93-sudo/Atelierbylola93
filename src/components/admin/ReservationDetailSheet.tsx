@@ -254,7 +254,8 @@ export function ReservationDetailSheet({ reservation, onClose, onChange }: Props
             <AlertDialogHeader>
               <AlertDialogTitle>Supprimer cette réservation ?</AlertDialogTitle>
               <AlertDialogDescription>
-                Cette action est irréversible. Le créneau redeviendra libre.
+                Le créneau redeviendra libre. La réservation part à la corbeille :
+                elle disparaît de vos écrans mais reste récupérable.
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
