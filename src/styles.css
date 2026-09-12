@@ -317,3 +317,40 @@ body.grid-on .grid-overlay {
   transform: translateY(-2px);
   box-shadow: 0 14px 38px -5px rgba(184, 143, 77, 0.55);
 }
+
+/* ---------------------------------------------------------------------------
+   Bandeau defilant
+   ---------------------------------------------------------------------------
+   Deux pistes au meme contenu, a des vitesses differentes : la grande devant,
+   une plus petite et plus sombre derriere. L'ecart de vitesse produit la
+   profondeur — un defilement a vitesse unique se lit comme un glissement, pas
+   comme un relief.
+
+   Chaque piste contient son contenu deux fois et se deplace de la moitie de sa
+   largeur : la reprise tombe exactement sur la copie, sans raccord visible.
+   -------------------------------------------------------------------------- */
+
+@keyframes bandeau-defile {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(-50%, 0, 0); }
+}
+
+.bandeau-piste {
+  display: flex;
+  width: max-content;
+  will-change: transform;
+  animation: bandeau-defile linear infinite;
+}
+
+/* Le mouvement porte l'effet : on le ralentit fortement plutot que de le
+   supprimer, pour que la page garde son intention sans agresser. */
+@media (prefers-reduced-motion: reduce) {
+  .bandeau-piste { animation-duration: 240s !important; }
+}
+
+/* Les bords s'effacent : le texte entre et sort du champ au lieu d'etre
+   tranche net par la fenetre. */
+.bandeau-masque {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+          mask-image: linear-gradient(to right, transparent, #000 9%, #000 91%, transparent);
+}

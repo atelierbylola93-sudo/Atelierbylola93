@@ -21,8 +21,7 @@ import heroSpaWellnessAsset from '../assets/hero-spa-wellness.webp';
 // Image exacte sur laquelle la video demarre : le passage de l'une a l'autre
 // est invisible, la ou une photo differente produisait un saut visuel.
 import heroVideoPoster from '../assets/hero-video-poster.webp';
-import { useHoraires } from '../lib/use-horaires';
-import { resumeCompact } from '../lib/opening-hours';
+import BandeauDefilant from '../components/BandeauDefilant';
 import soinVisageAsset from '../assets/ba-hydrafacial-after.webp';
 
 interface HomeViewProps {
@@ -30,10 +29,6 @@ interface HomeViewProps {
 }
 
 export default function HomeView({ onNavigate }: HomeViewProps) {
-  // Horaires réels, lus en base. Les afficher en dur ferait mentir la page :
-  // une visiteuse lirait des jours et des heures que la réservation refuse.
-  const horaires = resumeCompact(useHoraires());
-
   // Head Spa FAQ accordions state
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
 
@@ -318,27 +313,6 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
           </motion.div>
         </motion.div>
 
-        {/* Indicateur discret de scroll vertical */}
-        <motion.button
-          onClick={() => {
-            const el = document.getElementById('maison');
-            el?.scrollIntoView({ behavior: 'smooth' });
-          }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.9 }}
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 flex flex-col items-center gap-2 text-white/70 hover:text-white transition-colors cursor-pointer group"
-          aria-label="Faire défiler"
-        >
-          <span className="text-[10px] sm:text-[11px] uppercase tracking-[0.35em] font-light">Scroll</span>
-          <div className="w-[1px] h-9 bg-gradient-to-b from-white/60 to-transparent relative overflow-hidden">
-            <motion.div
-              animate={{ y: [-18, 36] }}
-              transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
-              className="w-full h-4 bg-[#DFC48B]"
-            />
-          </div>
-        </motion.button>
       </section>
 
       {/* ========================================================================= */}
@@ -423,32 +397,14 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
           </div>
 
         </div>
-
-        {/* Bandeau de repères. Rien d'invérifiable : une note Google inventée
-            ou des horaires écrits en dur se retournent contre la maison. */}
-        <div className="mt-14 pt-10 border-t border-[#B88F4D]/20 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-          <div className="space-y-1">
-            <span className="font-serif text-3xl md:text-4xl font-normal text-charcoal block">Head Spa</span>
-            <span className="text-[10px] sm:text-[11px] text-secondary-gray uppercase tracking-[0.2em] font-medium">Rituel japonais thermal</span>
-          </div>
-          <div className="space-y-1">
-            <span className="font-serif text-3xl md:text-4xl font-normal text-[#B88F4D] block">Privatif</span>
-            <span className="text-[10px] sm:text-[11px] text-secondary-gray uppercase tracking-[0.2em] font-medium">Boudoir intimiste</span>
-          </div>
-          <div className="space-y-1">
-            <span className="font-serif text-3xl md:text-4xl font-normal text-charcoal block">Le Pré</span>
-            <span className="text-[10px] sm:text-[11px] text-secondary-gray uppercase tracking-[0.2em] font-medium">Saint-Gervais · 2 min de Paris</span>
-          </div>
-          <div className="space-y-1">
-            <span className="font-serif text-3xl md:text-4xl font-normal text-[#A17E60] block">
-              {horaires ? horaires.jours : 'Sur RDV'}
-            </span>
-            <span className="text-[10px] sm:text-[11px] text-secondary-gray uppercase tracking-[0.2em] font-medium">
-              {horaires ? `${horaires.horaires} · sur rendez-vous` : 'Sur rendez-vous'}
-            </span>
-          </div>
-        </div>
       </section>
+
+      {/* ===================================================================== */}
+      {/* LE BANDEAU — le moment que la visiteuse doit retenir.                  */}
+      {/* Il arrive apres une section volontairement calme : sans ce silence,    */}
+      {/* un sommet n'en est plus un.                                           */}
+      {/* ===================================================================== */}
+      <BandeauDefilant />
 
       {/* ========================================================================= */}
       {/* 3. L'ATMOSPHÈRE & LE LIEU : IDENTITÉ RÉELLE DU SALON                      */}
