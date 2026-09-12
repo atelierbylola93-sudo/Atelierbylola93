@@ -35,3 +35,10 @@ dist-ssr
 .env.*
 !.env.example
 .vercel
+
+# Outils d'assistants deposes dans le projet (depot git imbrique, sans rapport
+# avec le site). Les suivre casserait les clones : le contenu n'y serait pas.
+.agents/
+
+# Configuration locale d'outillage
+.claude/launch.json
