@@ -1,5 +1,6 @@
 import { useRef } from 'react';
-import { motion, useScroll, useTransform } from 'motion/react';
+import { motion, useTransform } from 'motion/react';
+import { useProgression } from './scroll/primitives';
 import { useHoraires } from '../lib/use-horaires';
 import { resumeCompact } from '../lib/opening-hours';
 
@@ -63,21 +64,19 @@ function Piste({
 export default function BandeauDefilant() {
   const horaires = resumeCompact(useHoraires());
   const section = useRef<HTMLElement>(null);
-
-  const { scrollYProgress } = useScroll({
-    target: section,
-    offset: ['start end', 'end start'],
-  });
+  const progression = useProgression(section);
 
   // Les deux pistes dérivent verticalement à des amplitudes différentes pendant
   // que la section traverse l'écran. Le fond bouge moins que le premier plan,
   // comme un décor vu depuis un train.
-  const derivePremierPlan = useTransform(scrollYProgress, [0, 1], ['5%', '-5%']);
-  const deriveArrierePlan = useTransform(scrollYProgress, [0, 1], ['16%', '-16%']);
+  const derivePremierPlan = useTransform(progression, [0, 1], ['5%', '-5%']);
+  const deriveArrierePlan = useTransform(progression, [0, 1], ['16%', '-16%']);
 
-  // La section s'éclaircit en arrivant au centre de l'écran et se referme en
-  // sortant : le pic a sa propre respiration.
-  const opaciteVoile = useTransform(scrollYProgress, [0, 0.5, 1], [0.7, 0, 0.7]);
+  // Le sol dérive pendant la traversée : profond aux bords, ouvert au centre.
+  // Les trois paliers restent dans la même famille d'espresso — dériver vers une
+  // autre couleur au milieu d'une page n'est pas une atmosphère, c'est une
+  // visiteuse qui se demande si elle a changé de site.
+  const sol = useTransform(progression, [0, 0.5, 1], ['#19140E', '#241D14', '#19140E']);
 
   const reperes: Repere[] = [
     { titre: 'Head Spa', detail: 'Rituel japonais thermal' },
@@ -90,10 +89,11 @@ export default function BandeauDefilant() {
   ];
 
   return (
-    <section
+    <motion.section
       ref={section}
       aria-label="L'Atelier by Lola en quatre repères"
-      className="relative overflow-hidden bg-[#221D16] py-12 md:py-16"
+      className="relative overflow-hidden py-12 md:py-16"
+      style={{ backgroundColor: sol }}
     >
       {/* Grain : un aplat sombre moisonne sur les écrans réels. */}
       <div
@@ -105,11 +105,10 @@ export default function BandeauDefilant() {
         aria-hidden="true"
       />
 
-      <motion.div
-        className="pointer-events-none absolute inset-0 bg-[#0F0C08]"
-        style={{ opacity: opaciteVoile }}
-        aria-hidden="true"
-      />
+      {/* Pas de fondu aux bords : sur une bande de 284 px, un dégradé haut et
+          bas mange la moitié de la hauteur et se lit comme un flou, pas comme
+          une lumière. Le raccord avec la page est franc, et c'est la dérive du
+          sol, plus lente que l'œil, qui l'empêche d'être une cassure. */}
 
       <div className="bandeau-masque relative w-full">
         {/* Écho d'arrière-plan : titres seuls, plus petits, plus lents. */}
@@ -136,6 +135,6 @@ export default function BandeauDefilant() {
         </motion.div>
 
       </div>
-    </section>
+    </motion.section>
   );
 }

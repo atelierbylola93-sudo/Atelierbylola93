@@ -83,3 +83,42 @@ Il vit dans la section `BandeauDefilant`, entre « maison » et les prestations.
   cette raison, pas par facilité.
 - **Mouvement réduit.** Le bandeau ralentit à 240 s au lieu de s'arrêter : la
   méthode demande moins et plus doux, pas zéro.
+
+---
+
+## La partition du defilement
+
+Un dispositif par acte, et jamais deux fois la meme famille d'affilee : cinq
+sections qui bougent pareil, c'est une section montree cinq fois.
+
+| # | Acte | Dispositif | Pourquoi celui-la |
+|---|---|---|---|
+| 1 | Heros | `scrub` | La camera qui avance sous la main de la lectrice est la plus forte ouverture possible |
+| 2 | Maison | `kinetic` + derive | Le titre s'assemble ligne a ligne pendant que le cadre tient ; le sol se rechauffe en descendant |
+| 3 | **Bandeau** | `pan` + `parallax` | Deux pistes a vitesses differentes ; le sol derive pendant la traversee |
+| 4 | Atmosphere | `flow+in` | Trois volets qui arrivent l'un apres l'autre : une grille qu'on lit, pas une grille qui apparait |
+| 5 | Rituels | `reveal` | Un volet decouvre le rituel signature ; c'est le seul endroit qui a la surface pour ca |
+| 6 | Head Spa | `parallax` | Deux couches de lumiere en sens contraires, aucun texte dessus |
+| 7 | Conseiller | `pointer` | La page cesse de bouger et commence a repondre |
+| 8 | Temoignages | `flow+in` | Les paroles arrivent l'une apres l'autre |
+| 9 | Contact | `kinetic` | La derniere phrase se pose en deux temps, puis tient |
+
+Huit familles distinctes. Aucune repetition d'un acte au suivant.
+
+## Ce que le contenu ne doit pas a l'animation
+
+Framer Motion grave l'etat de depart dans le HTML rendu par le serveur. Une
+page dont le texte part de `opacity: 0` est donc litteralement vide tant que le
+JavaScript n'a pas pris la main : reseau lent, onglet en arriere-plan,
+hydratation retardee, script en echec. Verifie en conditions reelles, sur le
+build de production : un defilement declenche avant l'hydratation laissait onze
+blocs invisibles pour toute la visite.
+
+La charge est donc inversee. **Le HTML servi porte l'etat final** ; l'etat cache
+n'est applique qu'une fois le composant monte, et seulement aux elements situes
+sous la ligne de flottaison, la ou le basculement ne peut pas etre vu. Un texte
+qu'on ne voit jamais n'est pas un effet rate, c'est du contenu perdu.
+
+**Reste a traiter** : le heros porte encore des animations d'origine dont l'etat
+de depart est grave a `opacity: 0` dans le HTML du serveur. Son titre est le
+texte le plus important de la page ; il merite le meme traitement.

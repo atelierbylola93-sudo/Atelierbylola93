@@ -22,6 +22,7 @@ import heroSpaWellnessAsset from '../assets/hero-spa-wellness.webp';
 // est invisible, la ou une photo differente produisait un saut visuel.
 import heroVideoPoster from '../assets/hero-video-poster.webp';
 import BandeauDefilant from '../components/BandeauDefilant';
+import { TexteAssemble, Revele, Couche, Cascade } from '../components/scroll/primitives';
 import soinVisageAsset from '../assets/ba-hydrafacial-after.webp';
 
 interface HomeViewProps {
@@ -294,7 +295,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                 const el = document.getElementById('maison');
                 el?.scrollIntoView({ behavior: 'smooth' });
               }}
-              className="text-xs sm:text-[13px] text-white/90 hover:text-[#DFC48B] font-light tracking-[0.22em] uppercase transition-all duration-300 py-2 border-b border-white/40 hover:border-[#DFC48B] cursor-pointer flex items-center gap-2 group"
+              className="text-xs sm:text-[13px] text-white/90 hover:text-[#DFC48B] font-light tracking-[0.22em] uppercase transition-colors duration-200 py-2 border-b border-white/40 hover:border-[#DFC48B] cursor-pointer flex items-center gap-2 group"
             >
               <span>Découvrir la maison</span>
               <span className="text-xs transition-transform duration-300 group-hover:translate-y-0.5">↓</span>
@@ -319,7 +320,14 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
       {/* 2. SECTION MAISON : SAVOIR-FAIRE, INTIMITÉ ET SANCTUAIRE                  */}
       {/* ========================================================================= */}
       <section id="maison" className="py-20 max-w-7xl mx-auto px-6 md:px-12 relative">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+        {/* Le sol se réchauffe à mesure qu'on descend. L'espresso du bandeau
+            n'arrive donc pas sur un fond froid : il arrive après une transition
+            que la visiteuse a traversée sans la remarquer. */}
+        <div
+          className="pointer-events-none absolute inset-y-0 left-1/2 -translate-x-1/2 w-screen bg-gradient-to-b from-[#EFE7D2] via-[#EFE7D2] to-[#E9DFC8]"
+          aria-hidden="true"
+        />
+        <div className="relative grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
           
           {/* Colonne Gauche : Narration Éditoriale Haute Couture */}
           <div className="lg:col-span-8 lg:col-start-3 space-y-8">
@@ -327,8 +335,20 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
               <span className="text-[11px] font-sans uppercase tracking-[0.35em] text-[#B88F4D] font-semibold block">
                 Édition Confidentielle · Le Pré-Saint-Gervais
               </span>
+              {/* Le titre s'assemble ligne a ligne pendant que le cadre reste
+                  immobile : la section est un argument, pas une image. */}
               <h2 className="font-serif text-3.5xl sm:text-5xl md:text-5xl lg:text-[3.65rem] text-charcoal font-normal leading-[1.12] tracking-tight">
-                Un sanctuaire confidentiel dédié au <span className="font-signature text-5xl sm:text-6xl text-[#B88F4D] italic block sm:inline ml-1">lâcher-prise</span>
+                <TexteAssemble
+                  lignes={[
+                    'Un sanctuaire confidentiel',
+                    <>
+                      dédié au{' '}
+                      <span className="font-signature text-5xl sm:text-6xl text-[#B88F4D] italic">
+                        lâcher-prise
+                      </span>
+                    </>,
+                  ]}
+                />
               </h2>
             </div>
 
@@ -413,9 +433,6 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           
           <div className="text-center max-w-3xl mx-auto space-y-4 mb-16">
-            <span className="text-[11px] font-sans uppercase tracking-[0.35em] text-[#B88F4D] font-semibold block">
-              L’Identité du Lieu
-            </span>
             <h2 className="font-serif text-3xl sm:text-5xl text-charcoal font-normal leading-tight tracking-tight">
               Une architecture intérieure pensée pour apaiser
             </h2>
@@ -425,12 +442,12 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+          <Cascade className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch" classeEnfant="h-full">
             
             {/* Volet 1 : Les Arches et la Lumière */}
-            <div className="bg-[#EFE7D2]/60 p-8 rounded-3xl border border-[#B88F4D]/15 flex flex-col justify-between space-y-6 hover:shadow-lg transition-all duration-300">
+            <div className="h-full bg-[#EFE7D2]/60 p-8 rounded-3xl border border-[#B88F4D]/15 flex flex-col justify-between space-y-6 hover:shadow-lg transition-colors duration-200">
               <div className="space-y-3">
-                <span className="text-[10px] font-mono text-[#B88F4D] uppercase tracking-widest block">01 / LUMIÈRE & FORMES</span>
+                <span className="text-[10px] font-sans text-[#B88F4D] uppercase tracking-widest block">LUMIÈRE & FORMES</span>
                 <h3 className="font-serif text-xl text-charcoal font-medium">Miroirs Arqués & Niches Sculptées</h3>
                 <p className="text-xs sm:text-sm text-secondary-gray font-light leading-relaxed">
                   Des arches lumineuses rétroéclairées qui diffusent une clarté ambrée douce et enveloppante. Pas de néons agressifs, mais un éclairage chaleureux propice au lâcher-prise immédiat.
@@ -442,9 +459,9 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
             </div>
 
             {/* Volet 2 : Les Matières Minérales */}
-            <div className="bg-[#EFE7D2]/60 p-8 rounded-3xl border border-[#B88F4D]/15 flex flex-col justify-between space-y-6 hover:shadow-lg transition-all duration-300">
+            <div className="h-full bg-[#EFE7D2]/60 p-8 rounded-3xl border border-[#B88F4D]/15 flex flex-col justify-between space-y-6 hover:shadow-lg transition-colors duration-200">
               <div className="space-y-3">
-                <span className="text-[10px] font-mono text-[#B88F4D] uppercase tracking-widest block">02 / MATIÈRE & TEXTURE</span>
+                <span className="text-[10px] font-sans text-[#B88F4D] uppercase tracking-widest block">MATIÈRE & TEXTURE</span>
                 <h3 className="font-serif text-xl text-charcoal font-medium">Enduit Beige & Pierre Minérale</h3>
                 <p className="text-xs sm:text-sm text-secondary-gray font-light leading-relaxed">
                   Le toucher brut de la chaux texturée sur les murs et la fraîcheur noble du sol en pierre claire. Une palette naturelle sable, ivoire et champagne qui apaise l'esprit dès le pas de la porte.
@@ -456,9 +473,9 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
             </div>
 
             {/* Volet 3 : L'Écrin Privatisé */}
-            <div className="bg-[#EFE7D2]/60 p-8 rounded-3xl border border-[#B88F4D]/15 flex flex-col justify-between space-y-6 hover:shadow-lg transition-all duration-300">
+            <div className="h-full bg-[#EFE7D2]/60 p-8 rounded-3xl border border-[#B88F4D]/15 flex flex-col justify-between space-y-6 hover:shadow-lg transition-colors duration-200">
               <div className="space-y-3">
-                <span className="text-[10px] font-mono text-[#B88F4D] uppercase tracking-widest block">03 / CONFORT & INTIMITÉ</span>
+                <span className="text-[10px] font-sans text-[#B88F4D] uppercase tracking-widest block">CONFORT & INTIMITÉ</span>
                 <h3 className="font-serif text-xl text-charcoal font-medium">Fauteuils Noirs & Comptoir Épuré</h3>
                 <p className="text-xs sm:text-sm text-secondary-gray font-light leading-relaxed">
                   Des assises ergonomiques profondes aux lignes noires élégantes, contrastant avec le comptoir d'accueil blanc minimaliste. Une hygiène irréprochable et un confort absolu pour vos soins.
@@ -469,7 +486,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
               </div>
             </div>
 
-          </div>
+          </Cascade>
 
         </div>
       </section>
@@ -479,9 +496,6 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
       {/* ========================================================================= */}
       <section id="rituels" className="py-28 max-w-7xl mx-auto px-6 md:px-12">
         <div className="text-left mb-20 space-y-4">
-          <span className="text-[11px] font-sans uppercase tracking-[0.35em] text-[#B88F4D] font-semibold block">
-            Collection de Soins
-          </span>
           <h2 className="font-serif text-3xl sm:text-5xl lg:text-6xl text-charcoal font-normal leading-tight tracking-tight">
             Les Rituels d'Auteur
           </h2>
@@ -493,7 +507,10 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
 
         <div className="space-y-16">
           
-          {/* RITUEL VEDETTE : JAPANESE HEAD SPA (Grand format majestueux) */}
+          {/* RITUEL VEDETTE : un volet le découvre par le bas. Sur cette
+              surface le mouvement se lit comme une révélation ; c'est le seul
+              endroit de la page qui en a la place. */}
+          <Revele depuis="bas">
           <div className="bg-white rounded-[32px] overflow-hidden border border-[#B88F4D]/20 shadow-xl grid grid-cols-1 lg:grid-cols-12 items-stretch group">
             <div className="lg:col-span-7 h-80 sm:h-96 lg:h-auto min-h-[380px] relative overflow-hidden">
               <img 
@@ -556,6 +573,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
               </div>
             </div>
           </div>
+          </Revele>
 
           {/* RITUELS DUO : SOINS DU VISAGE D'ÉLITE */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -593,7 +611,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                     onNavigate('reservation');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="flex-1 py-3.5 bg-[#B88F4D] hover:bg-charcoal text-white rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300"
+                  className="flex-1 py-3.5 bg-[#B88F4D] hover:bg-charcoal text-white rounded-full text-xs font-bold uppercase tracking-wider transition-colors duration-200"
                 >
                   Réserver (105 €)
                 </button>
@@ -639,7 +657,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                     onNavigate('reservation');
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                   }}
-                  className="flex-1 py-3.5 bg-[#B88F4D] hover:bg-charcoal text-white rounded-full text-xs font-bold uppercase tracking-wider transition-all duration-300"
+                  className="flex-1 py-3.5 bg-[#B88F4D] hover:bg-charcoal text-white rounded-full text-xs font-bold uppercase tracking-wider transition-colors duration-200"
                 >
                   Réserver (160 €)
                 </button>
@@ -711,9 +729,16 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
       {/* 5. FOCUS SENSORIEL : LE SANCTUAIRE HEAD SPA JAPONAIS                      */}
       {/* ========================================================================= */}
       <section className="bg-charcoal text-white py-28 relative overflow-hidden">
-        {/* Halos dorés d'ambiance nocturne de palace */}
-        <div className="absolute top-0 left-0 w-96 h-96 rounded-full bg-[#B88F4D]/10 blur-[140px] pointer-events-none" />
-        <div className="absolute bottom-0 right-0 w-96 h-96 rounded-full bg-[#A3A485]/10 blur-[140px] pointer-events-none" />
+        {/* Deux couches de lumière qui avancent à leur propre vitesse, en sens
+            contraires. Sans cet écart la lumière est un décor peint ; avec, la
+            salle a une profondeur. Aucun texte ne voyage dessus : ce qu'on lit
+            ne doit pas bouger par rapport à ce sur quoi on le lit. */}
+        <Couche taux={1.1} className="absolute inset-0 pointer-events-none">
+          <div className="absolute -top-20 left-0 w-96 h-96 rounded-full bg-[#B88F4D]/10 blur-[140px]" />
+        </Couche>
+        <Couche taux={-0.7} className="absolute inset-0 pointer-events-none">
+          <div className="absolute -bottom-20 right-0 w-96 h-96 rounded-full bg-[#A3A485]/10 blur-[140px]" />
+        </Couche>
 
         <div className="max-w-7xl mx-auto px-6 md:px-12 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
@@ -747,7 +772,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
             {/* Colonne Droite : Protocole et Bienfaits */}
             <div className="lg:col-span-7 space-y-8">
               <div className="space-y-3">
-                <span className="text-[10px] font-mono uppercase tracking-[0.35em] text-[#DFC48B] font-bold block">
+                <span className="text-[10px] font-sans uppercase tracking-[0.35em] text-[#DFC48B] font-bold block">
                   TRADITION THERMALE DE KYOTO
                 </span>
                 <h2 className="font-serif text-3xl sm:text-5xl text-white font-normal leading-tight tracking-tight">
@@ -853,7 +878,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
               {headSpaFaqs.map((faq, idx) => (
                 <div
                   key={`hs-faq-${idx}`}
-                  className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden transition-all duration-300"
+                  className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden transition-colors duration-200"
                 >
                   <button
                     onClick={() => setActiveFaq(activeFaq === idx ? null : idx)}
@@ -893,9 +918,6 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
       {/* ========================================================================= */}
       <section id="ritual-advisor-section" className="py-28 max-w-7xl mx-auto px-6 md:px-12">
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-14">
-          <span className="text-[11px] font-sans uppercase tracking-[0.35em] text-[#B88F4D] font-semibold block">
-            Diagnostic & Recommandation
-          </span>
           <h2 className="font-serif text-3xl sm:text-5xl text-charcoal font-normal leading-tight tracking-tight">
             Quel rituel est fait pour vous ?
           </h2>
@@ -916,7 +938,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
             <button
               key={`ritual-tab-${idx}`}
               onClick={() => setSelectedConcern(idx)}
-              className={`px-6 py-3.5 rounded-full transition-all duration-300 border text-xs font-semibold uppercase tracking-wider cursor-pointer ${
+              className={`px-6 py-3.5 rounded-full transition-colors duration-200 border text-xs font-semibold uppercase tracking-wider cursor-pointer ${
                 selectedConcern === idx
                   ? 'bg-charcoal text-white border-charcoal shadow-md'
                   : 'bg-white text-secondary-gray border-[#B88F4D]/15 hover:border-[#B88F4D]/40 hover:bg-[#EFE7D2]'
@@ -1012,20 +1034,17 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
         <div className="max-w-7xl mx-auto px-6 md:px-12">
           
           <div className="text-center max-w-2xl mx-auto space-y-4 mb-16">
-            <span className="text-[11px] font-sans uppercase tracking-[0.35em] text-[#B88F4D] font-semibold block">
-              Témoignages & Récits
-            </span>
             <h2 className="font-serif text-3xl sm:text-4xl text-charcoal font-normal">
               La parole à celles et ceux qui ont vécu l'expérience
             </h2>
             <div className="w-16 h-[1.5px] bg-[#B88F4D] mx-auto" />
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <Cascade className="grid grid-cols-1 md:grid-cols-3 gap-8" classeEnfant="h-full">
             {REVIEWS.slice(0, 3).map((review, idx) => (
               <div 
                 key={`review-${idx}`}
-                className="bg-[#EFE7D2]/50 p-8 rounded-3xl border border-[#B88F4D]/15 flex flex-col justify-between space-y-6 shadow-sm hover:shadow-md transition-all duration-300"
+                className="h-full bg-[#EFE7D2]/50 p-8 rounded-3xl border border-[#B88F4D]/15 flex flex-col justify-between space-y-6 shadow-sm hover:shadow-md transition-colors duration-200"
               >
                 <div className="space-y-4">
                   <div className="text-[#B88F4D] text-sm tracking-widest">★★★★★</div>
@@ -1039,7 +1058,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                 </div>
               </div>
             ))}
-          </div>
+          </Cascade>
 
         </div>
       </section>
@@ -1050,11 +1069,17 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
       <section className="py-28 bg-[#DDCCB2]/40 relative overflow-hidden text-center">
         <div className="max-w-4xl mx-auto px-6 space-y-8 relative z-10">
           <div className="space-y-4">
-            <span className="text-[11px] font-sans uppercase tracking-[0.38em] text-[#B88F4D] font-semibold block">
-              Votre Parenthèse Commence Ici
-            </span>
+            {/* La dernière phrase se pose en deux temps puis tient. Une page
+                qui se termine en s'effaçant ne laisse aucune dernière
+                sensation à emporter. */}
             <h2 className="font-serif text-3xl sm:text-5xl md:text-6xl text-charcoal font-normal leading-tight tracking-tight">
-              Prête à vivre l'expérience L'Atelier by Lola ?
+              <TexteAssemble
+                decalage={0.11}
+                lignes={[
+                  "Prête à vivre l'expérience",
+                  "L'Atelier by Lola ?",
+                ]}
+              />
             </h2>
             <div className="w-20 h-[1.5px] bg-[#B88F4D] mx-auto" />
             <p className="text-secondary-gray text-xs sm:text-base font-light leading-relaxed max-w-2xl mx-auto">
