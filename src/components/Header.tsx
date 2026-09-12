@@ -86,7 +86,7 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
                 className={`py-1 text-[11px] xl:text-xs uppercase tracking-[0.16em] xl:tracking-[0.2em] font-medium whitespace-nowrap transition-colors duration-300 flex items-center gap-1 cursor-pointer text-charcoal hover:text-[#B88F4D]`}
               >
                 Autres Prestations
-                <span className="text-[9px] text-[#B88F4D]">▼</span>
+                <span className="text-[11px] text-[#B88F4D]">▼</span>
               </button>
               
               <div className="absolute top-full right-0 mt-2 w-72 glass-premium border border-[#B88F4D]/25 rounded-[24px] p-4 opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:scale-100 group-focus-within:scale-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-all duration-300 shadow-xl bg-white/95 backdrop-blur-md">
@@ -103,7 +103,7 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
                       }`}
                     >
                       <span>{item.name}</span>
-                      {item.page === 'ipl' && <span className="bg-[#A3A485]/15 text-[#A3A485] text-[9px] px-1.5 py-0.5 rounded-full font-bold">IPL</span>}
+                      {item.page === 'ipl' && <span className="bg-[#A3A485]/15 text-[#A3A485] text-[11px] px-1.5 py-0.5 rounded-full font-bold">IPL</span>}
                     </a>
                   ))}
                 </div>
@@ -167,7 +167,7 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
                         <span className={`text-[10px] ${currentPage === item.page ? 'text-white/80' : 'text-secondary-gray'}`}>{item.description}</span>
                       </div>
                       {item.page === 'head-spa' && (
-                        <span className="flex items-center gap-1 bg-[#A3A485] text-white text-[9px] px-2 py-0.5 rounded-full uppercase font-bold">
+                        <span className="flex items-center gap-1 bg-[#A3A485] text-white text-[11px] px-2 py-0.5 rounded-full uppercase font-bold">
                           <Star className="h-2 w-2 fill-white" /> Secret
                         </span>
                       )}

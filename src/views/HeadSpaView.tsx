@@ -3,7 +3,7 @@ import { Calendar, CheckCircle2, Star, ShieldCheck, Clock, Leaf, AlertTriangle, 
 import { HEAD_SPA_DATA } from '../data';
 import FaqSection from '../components/FaqSection';
 import LocalSeoSection from '../components/LocalSeoSection';
-import headspaHeroAsset from '../assets/headspa-hero.png';
+import headspaHeroAsset from '../assets/headspa-hero.webp';
 
 export default function HeadSpaView() {
   return (
@@ -16,6 +16,9 @@ export default function HeadSpaView() {
           alt="Head Spa L'Atelier by Lola Le Pré-Saint-Gervais"
           referrerPolicy="no-referrer"
           className="absolute inset-0 w-full h-full object-cover object-center"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-r from-[#EFE7D2]/90 via-[#EFE7D2]/50 to-[#EFE7D2]/10" />
         <div className="absolute inset-0 bg-gradient-to-t from-[#EFE7D2] via-transparent to-[#EFE7D2]/20" />

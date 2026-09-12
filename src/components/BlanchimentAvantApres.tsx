@@ -1,7 +1,7 @@
 import { useState, useRef, useCallback, useEffect } from 'react';
 import { ArrowLeftRight } from 'lucide-react';
-import avantAsset from '../assets/blanchiment-avant.png';
-import apresAsset from '../assets/blanchiment-apres.png';
+import avantAsset from '../assets/blanchiment-avant.webp';
+import apresAsset from '../assets/blanchiment-apres.webp';
 
 export default function BlanchimentAvantApres() {
   const [pos, setPos] = useState(50);
@@ -69,6 +69,8 @@ export default function BlanchimentAvantApres() {
           alt="Avant blanchiment dentaire — L'Atelier Lola"
           draggable={false}
           className="absolute inset-0 h-full w-full object-cover pointer-events-none"
+          loading="lazy"
+          decoding="async"
         />
         <div className="absolute top-4 left-4 z-10 bg-black/70 backdrop-blur-sm text-white text-[10px] md:text-xs font-semibold uppercase tracking-widest px-3 py-1.5 rounded-full">
           Avant
@@ -84,6 +86,8 @@ export default function BlanchimentAvantApres() {
             alt="Après blanchiment dentaire — L'Atelier Lola"
             draggable={false}
             className="absolute inset-0 h-full w-full object-cover"
+            loading="lazy"
+            decoding="async"
           />
         </div>
         <div

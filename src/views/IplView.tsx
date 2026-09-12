@@ -14,6 +14,9 @@ export default function IplView() {
           alt="Épilation Lumière Pulsée Le Pré-Saint-Gervais L'Atelier Lola"
           referrerPolicy="no-referrer"
           className="absolute inset-0 w-full h-full object-cover opacity-60 scale-102 filter brightness-[0.75]"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#EFE7D2] via-black/10 to-black/30" />
         
@@ -59,7 +62,7 @@ export default function IplView() {
                 }`}
               >
                 {item.isPopular && (
-                  <span className="inline-block self-start mb-3 bg-[#B88F4D] shadow-sm text-white text-[9px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">
+                  <span className="inline-block self-start mb-3 bg-[#B88F4D] shadow-sm text-white text-[11px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">
                     Glow Populaire
                   </span>
                 )}

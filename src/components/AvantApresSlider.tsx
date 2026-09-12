@@ -87,6 +87,8 @@ export default function AvantApresSlider() {
           alt="Avant l'Atelier Lola"
           referrerPolicy="no-referrer"
           className="absolute inset-0 h-full w-full object-cover pointer-events-none"
+          loading="lazy"
+          decoding="async"
         />
         <div className="absolute top-4 left-4 z-10 glass-dark text-white text-[10px] font-semibold uppercase tracking-widest px-3 py-1.5 rounded-[24px]">
           Avant
@@ -103,6 +105,8 @@ export default function AvantApresSlider() {
             referrerPolicy="no-referrer"
             className="absolute inset-0 h-[320px] md:h-[450px] w-full max-w-none object-cover"
             style={{ width: containerRef.current?.getBoundingClientRect().width || '100vw' }}
+            loading="lazy"
+            decoding="async"
           />
           <div className="absolute top-4 left-4 z-10 bg-[#B88F4D] text-white text-[10px] font-semibold uppercase tracking-widest px-3 py-1.5 rounded-[24px]">
             Après

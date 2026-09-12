@@ -15,7 +15,7 @@ import {
 } from 'lucide-react';
 import { INSTITUT_INFO, LUXURY_IMAGES } from '../data';
 import { Page } from '../types';
-import heroSpaWellnessAsset from '../assets/hero-spa-wellness.png';
+import heroSpaWellnessAsset from '../assets/hero-spa-wellness.webp';
 
 interface HomeViewProps {
   onNavigate: (page: Page) => void;
@@ -164,6 +164,9 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
             alt="Ambiance spa zen avec bougies, pierres chaudes et huiles essentielles"
             referrerPolicy="no-referrer"
             className="w-full h-full object-cover filter brightness-110 contrast-95 saturate-95"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
           />
           {/* Soft cream veil for a light, inviting hero */}
           <div className="absolute inset-0 bg-gradient-to-b from-[#EFE7D2]/70 via-[#EFE7D2]/55 to-[#EFE7D2]" />
@@ -184,7 +187,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
               <span className="text-[#B88F4D] text-xs md:text-sm tracking-[0.2em] font-serif">★★★★★</span>
               <div className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full border border-[#B88F4D]/30 bg-white/70 backdrop-blur-md text-charcoal mt-1 shadow-sm">
                 <Sparkles className="h-3 w-3 text-[#B88F4D] animate-pulse" />
-                <span className="text-[8px] md:text-xs uppercase tracking-[0.2em] font-semibold text-charcoal/90">
+                <span className="text-[11px] md:text-xs uppercase tracking-[0.2em] font-semibold text-charcoal/90">
                   Beauté & Bien-être Haut de Gamme
                 </span>
               </div>
@@ -200,7 +203,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
               Maison d'Esthétique & de Repos Capillaire d'Exception
             </p>
 
-            <p className="text-[#A17E60] text-[9px] md:text-xs tracking-[0.25em] uppercase font-semibold px-2">
+            <p className="text-[#A17E60] text-[11px] md:text-xs tracking-[0.25em] uppercase font-semibold px-2">
               Le Pré-Saint-Gervais • Séance Sensorielle Exclusive
             </p>
 
@@ -209,17 +212,17 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
               <div className="px-1.5 py-3 sm:px-3 sm:py-4 rounded-[20px] bg-white/75 backdrop-blur-md border border-[#B88F4D]/20 text-charcoal transition-all duration-300 hover:bg-white hover:border-[#B88F4D]/60 hover:shadow-md group">
                 <Compass className="h-3.5 w-3.5 text-[#B88F4D] mx-auto mb-1 duration-300 group-hover:scale-110" />
                 <span className="text-[10px] sm:text-[11px] md:text-xs font-serif uppercase tracking-widest font-semibold text-[#B88F4D] block">Head Spa</span>
-                <span className="text-[8px] sm:text-[9px] text-secondary-gray tracking-wider block mt-0.5">Rituel Japonais</span>
+                <span className="text-[11px] sm:text-[11px] text-secondary-gray tracking-wider block mt-0.5">Rituel Japonais</span>
               </div>
               <div className="px-1.5 py-3 sm:px-3 sm:py-4 rounded-[20px] bg-white/75 backdrop-blur-md border border-[#B88F4D]/20 text-charcoal transition-all duration-300 hover:bg-white hover:border-[#B88F4D]/60 hover:shadow-md group">
                 <Droplet className="h-3.5 w-3.5 text-[#B88F4D] mx-auto mb-1 duration-300 group-hover:scale-110" />
                 <span className="text-[10px] sm:text-[11px] md:text-xs font-serif uppercase tracking-widest font-semibold text-[#B88F4D] block">Soin du visage</span>
-                <span className="text-[8px] sm:text-[9px] text-secondary-gray tracking-wider block mt-0.5">Éclat</span>
+                <span className="text-[11px] sm:text-[11px] text-secondary-gray tracking-wider block mt-0.5">Éclat</span>
               </div>
               <div className="px-1.5 py-3 sm:px-3 sm:py-4 rounded-[20px] bg-white/75 backdrop-blur-md border border-[#B88F4D]/20 text-charcoal transition-all duration-300 hover:bg-white hover:border-[#B88F4D]/60 hover:shadow-md group">
                 <Sparkles className="h-3.5 w-3.5 text-[#B88F4D] mx-auto mb-1 duration-300 group-hover:scale-110" />
                 <span className="text-[10px] sm:text-[11px] md:text-xs font-serif uppercase tracking-widest font-semibold text-[#B88F4D] block">Needling</span>
-                <span className="text-[8px] sm:text-[9px] text-secondary-gray tracking-wider block mt-0.5">Anti-Âge Pur</span>
+                <span className="text-[11px] sm:text-[11px] text-secondary-gray tracking-wider block mt-0.5">Anti-Âge Pur</span>
               </div>
             </div>
 
@@ -256,7 +259,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
 
         {/* Scroll indicator — placed above the buttons, clear of the overlapping stats banner */}
         <div className="relative z-10 mt-6 mb-2 hidden md:flex flex-col items-center gap-1 text-charcoal/60 pointer-events-none">
-          <span className="text-[9px] uppercase tracking-[0.25em] font-medium">Défiler</span>
+          <span className="text-[11px] uppercase tracking-[0.25em] font-medium">Défiler</span>
           <motion.div
             animate={{ y: [0, 6, 0] }}
             transition={{ repeat: Infinity, duration: 2.2, ease: "easeInOut" }}
@@ -355,7 +358,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
       {/* 2.7 WHY CHOOSE US (POURQUOI CHOISIR L'ATELIER BY LOLA) - ASYMMETRICAL LUXURY EDITORIAL */}
       <section className="py-24 max-w-7xl mx-auto px-4 md:px-8">
         {/* Vignelli Swiss Rule major header line */}
-        <div className="w-full border-t-2 border-charcoal/10 pt-4 mb-12 flex justify-between items-baseline font-mono text-[9px] tracking-[0.25em] text-secondary-gray uppercase select-none">
+        <div className="w-full border-t-2 border-charcoal/10 pt-4 mb-12 flex justify-between items-baseline font-mono text-[11px] tracking-[0.25em] text-secondary-gray uppercase select-none">
           <span>SECTION 01 / INTRO</span>
           <span>Savoir-Faire &amp; Intimité</span>
         </div>
@@ -439,7 +442,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           
           {/* Vignelli Swiss Rule major header line */}
-          <div className="w-full border-t-2 border-charcoal/10 pt-4 mb-16 flex justify-between items-baseline font-mono text-[9px] tracking-[0.25em] text-secondary-gray uppercase select-none">
+          <div className="w-full border-t-2 border-charcoal/10 pt-4 mb-16 flex justify-between items-baseline font-mono text-[11px] tracking-[0.25em] text-secondary-gray uppercase select-none">
             <span>SECTION 02 / PRESTATIONS</span>
             <span>La Collection d'Auteur</span>
           </div>
@@ -468,6 +471,8 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                   alt={featuredServices[0].title} 
                   referrerPolicy="no-referrer"
                   className="w-full h-full object-cover transition-transform duration-[1200ms] hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t lg:bg-gradient-to-r from-black/55 to-transparent" />
                 <span className="absolute top-6 left-6 bg-[#B88F4D] text-white text-[10px] uppercase font-bold tracking-widest px-4 py-2 rounded-full shadow-lg">
@@ -484,9 +489,9 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                     {featuredServices[0].description}
                   </p>
                   <div className="flex flex-wrap gap-2 pt-2">
-                    <span className="text-[9px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded bg-[#B88F4D]/5 border border-[#B88F4D]/15 text-[#B88F4D]">Arche de Brume</span>
-                    <span className="text-[9px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded bg-[#B88F4D]/5 border border-[#B88F4D]/15 text-[#B88F4D]">Massage Shiatsu</span>
-                    <span className="text-[9px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded bg-[#A3A485]/5 border border-[#A3A485]/15 text-[#A3A485]">Cocon Privé</span>
+                    <span className="text-[11px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded bg-[#B88F4D]/5 border border-[#B88F4D]/15 text-[#B88F4D]">Arche de Brume</span>
+                    <span className="text-[11px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded bg-[#B88F4D]/5 border border-[#B88F4D]/15 text-[#B88F4D]">Massage Shiatsu</span>
+                    <span className="text-[11px] uppercase tracking-wider font-semibold px-2.5 py-1 rounded bg-[#A3A485]/5 border border-[#A3A485]/15 text-[#A3A485]">Cocon Privé</span>
                   </div>
                 </div>
                 <button
@@ -511,8 +516,10 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                       alt={featuredServices[1].title} 
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover transition-transform duration-[1200ms] hover:scale-105"
+                      loading="lazy"
+                      decoding="async"
                     />
-                    <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur text-charcoal text-[9px] uppercase font-bold tracking-widest px-3 py-1.5 rounded-md border border-[#B88F4D]/10">
+                    <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur text-charcoal text-[11px] uppercase font-bold tracking-widest px-3 py-1.5 rounded-md border border-[#B88F4D]/10">
                       {featuredServices[1].tag}
                     </div>
                   </div>
@@ -545,8 +552,10 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                       alt={featuredServices[2].title} 
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover transition-transform duration-[1200ms] hover:scale-105"
+                      loading="lazy"
+                      decoding="async"
                     />
-                    <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur text-charcoal text-[9px] uppercase font-bold tracking-widest px-3 py-1.5 rounded-md border border-[#B88F4D]/10">
+                    <div className="absolute bottom-4 left-4 bg-white/95 backdrop-blur text-charcoal text-[11px] uppercase font-bold tracking-widest px-3 py-1.5 rounded-md border border-[#B88F4D]/10">
                       {featuredServices[2].tag}
                     </div>
                   </div>
@@ -584,7 +593,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                 {/* Browlift/Regard - Spans 5 columns */}
                 <div className="md:col-span-5 bg-white rounded-[32px] overflow-hidden border border-[#B88F4D]/10 shadow-[0_10px_35px_rgba(0,0,0,0.02)] p-8 flex flex-col justify-between space-y-6">
                   <div className="space-y-4">
-                    <span className="text-[9px] uppercase font-bold text-[#B88F4D] tracking-wider select-none">
+                    <span className="text-[11px] uppercase font-bold text-[#B88F4D] tracking-wider select-none">
                       Focus Regard / {featuredServices[3].price}
                     </span>
                     <h5 className="font-serif text-xl font-bold text-charcoal">{featuredServices[3].title}</h5>
@@ -598,6 +607,8 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                       alt={featuredServices[3].title} 
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                   <button
@@ -612,7 +623,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                 <div className="md:col-span-7 bg-white rounded-[32px] overflow-hidden border border-[#B88F4D]/10 shadow-[0_10px_35px_rgba(0,0,0,0.02)] p-8 sm:p-10 flex flex-col md:flex-row justify-between gap-8 items-stretch">
                   <div className="flex-1 flex flex-col justify-between space-y-4">
                     <div className="space-y-4">
-                      <span className="text-[9px] uppercase font-bold text-[#A3A485] tracking-wider select-none">
+                      <span className="text-[11px] uppercase font-bold text-[#A3A485] tracking-wider select-none">
                         Haute Technologie / {featuredServices[4].price}
                       </span>
                       <h5 className="font-serif text-xl sm:text-2xl font-bold text-charcoal">{featuredServices[4].title}</h5>
@@ -633,6 +644,8 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                       alt={featuredServices[4].title} 
                       referrerPolicy="no-referrer"
                       className="w-full h-full object-cover object-center"
+                      loading="lazy"
+                      decoding="async"
                     />
                   </div>
                 </div>
@@ -641,7 +654,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                 <div className="md:col-span-12 bg-charcoal text-white rounded-[32px] overflow-hidden border border-[#B88F4D]/20 p-8 sm:p-10 flex flex-col md:flex-row items-center gap-8 justify-between relative">
                   <div className="absolute top-0 right-0 w-80 h-full bg-[#B88F4D]/5 blur-3xl pointer-events-none" />
                   <div className="space-y-4 max-w-xl relative z-10">
-                    <span className="text-[9px] uppercase font-bold text-[#B88F4D] tracking-widest">
+                    <span className="text-[11px] uppercase font-bold text-[#B88F4D] tracking-widest">
                       Dents & Sourire / {featuredServices[5].price}
                     </span>
                     <h5 className="font-serif text-2xl font-light tracking-wide">{featuredServices[5].title}</h5>
@@ -656,6 +669,8 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                         alt={featuredServices[5].title} 
                         referrerPolicy="no-referrer"
                         className="w-full h-full object-cover"
+                        loading="lazy"
+                        decoding="async"
                       />
                     </div>
                     <button
@@ -688,7 +703,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
               </button>
               <a
                 href={`tel:${INSTITUT_INFO.phoneFormatted}`}
-                className="text-xs uppercase font-bold text-[#B88F4D] hover:underline flex items-center gap-1.5"
+                className="text-xs uppercase font-bold text-[#B88F4D] hover:underline inline-flex items-center gap-1.5 min-h-[44px] py-2 -my-2"
               >
                 <Phone className="h-3.5 w-3.5" /> Appeler pour un conseil direct
               </a>
@@ -706,7 +721,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
         <div className="max-w-7xl mx-auto px-4 md:px-8">
           
           {/* Vignelli Swiss Rule major header line in white/opacity for dark theme */}
-          <div className="w-full border-t border-white/10 pt-4 mb-16 flex justify-between items-baseline font-mono text-[9px] tracking-[0.25em] text-gray-400 uppercase select-none">
+          <div className="w-full border-t border-white/10 pt-4 mb-16 flex justify-between items-baseline font-mono text-[11px] tracking-[0.25em] text-gray-400 uppercase select-none">
             <span>SECTION 03 / FOCUS</span>
             <span>Le Secret Ancestral</span>
           </div>
@@ -896,7 +911,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
 
         
         {/* Vignelli Swiss Rule major header line */}
-        <div className="w-full border-t-2 border-charcoal/10 pt-4 mb-16 flex justify-between items-baseline font-mono text-[9px] tracking-[0.25em] text-secondary-gray uppercase select-none">
+        <div className="w-full border-t-2 border-charcoal/10 pt-4 mb-16 flex justify-between items-baseline font-mono text-[11px] tracking-[0.25em] text-secondary-gray uppercase select-none">
           <span>SECTION 04 / INTERACTIF</span>
           <span>Conciergerie Digitale</span>
         </div>
@@ -934,7 +949,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
               <span className="block text-[11px] uppercase tracking-widest font-bold">
                 {tab.label}
               </span>
-              <span className="block text-[8px] opacity-75 font-serif italic mt-0.5">
+              <span className="block text-[11px] opacity-75 font-serif italic mt-0.5">
                 {tab.desc} • {tab.concern}
               </span>
             </button>
@@ -969,7 +984,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
                   {/* 2. Content — 5 cols */}
                   <div className="lg:col-span-5 flex flex-col justify-center gap-6 lg:py-2">
                     <div>
-                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#A3A485]/10 border border-[#A3A485]/30 text-[9px] text-[#A3A485] font-bold uppercase tracking-widest mb-3">
+                      <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#A3A485]/10 border border-[#A3A485]/30 text-[11px] text-[#A3A485] font-bold uppercase tracking-widest mb-3">
                         <Sparkles className="h-3 w-3" /> Votre recommandation sur-mesure
                       </div>
                       <h3 className="font-serif text-2xl sm:text-3xl lg:text-4xl text-charcoal font-light leading-tight">

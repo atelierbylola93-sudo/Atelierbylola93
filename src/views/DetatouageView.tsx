@@ -14,6 +14,9 @@ export default function DetatouageView() {
           alt="Détatouage sourcils esthétique Le Pré-Saint-Gervais"
           referrerPolicy="no-referrer"
           className="absolute inset-0 w-full h-full object-cover opacity-65 scale-102 filter brightness-[0.70]"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-[#EFE7D2] via-black/10 to-black/30" />
         

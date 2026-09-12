@@ -13,6 +13,9 @@ export default function CoiffureView() {
           alt="Brushing de Luxe L'Atelier Lola"
           referrerPolicy="no-referrer"
           className="absolute inset-0 w-full h-full object-cover scale-102 filter brightness-110 contrast-95 saturate-95"
+          loading="eager"
+          fetchPriority="high"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-[#EFE7D2]/70 via-[#EFE7D2]/55 to-[#EFE7D2]" />
         <div className="absolute inset-0 bg-gradient-to-tr from-[#DDCCB2]/40 via-transparent to-[#A3A485]/15" />
@@ -63,7 +66,7 @@ export default function CoiffureView() {
                   }`}
                 >
                   {item.isPopular && (
-                    <span className="inline-block self-start mb-3 bg-[#B88F4D] shadow-sm text-white text-[9px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">
+                    <span className="inline-block self-start mb-3 bg-[#B88F4D] shadow-sm text-white text-[11px] uppercase font-bold tracking-wider px-3 py-1 rounded-full">
                       Exclusivité
                     </span>
                   )}
