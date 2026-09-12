@@ -20,6 +20,7 @@ export const listReservations = createServerFn({ method: 'GET' })
     const { data, error } = await context.supabase
       .from('reservations')
       .select('*')
+      .is('deleted_at', null)
       .order('appointment_date', { ascending: false })
       .order('appointment_time', { ascending: false });
     if (error) throw new Error(error.message);
@@ -74,7 +75,13 @@ export const deleteReservation = createServerFn({ method: 'POST' })
     const { data: role } = await context.supabase
       .from('user_roles').select('role').eq('user_id', context.userId).eq('role', 'admin').maybeSingle();
     if (!role) throw new Error('Forbidden');
-    const { error } = await context.supabase.from('reservations').delete().eq('id', data.id);
+    // Corbeille plutot que suppression : la base n'a pas de sauvegarde, un
+    // effacement definitif serait irrattrapable. La ligne quitte les ecrans et
+    // libere son creneau, mais reste recuperable.
+    const { error } = await context.supabase
+      .from('reservations')
+      .update({ deleted_at: new Date().toISOString() })
+      .eq('id', data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -255,6 +262,7 @@ export const listReservationsRange = createServerFn({ method: 'GET' })
       context.supabase
         .from('reservations')
         .select('*')
+        .is('deleted_at', null)
         .gte('appointment_date', data.start_date)
         .lte('appointment_date', data.end_date)
         .order('appointment_date', { ascending: true })
@@ -332,6 +340,7 @@ export const createManualReservation = createServerFn({ method: 'POST' })
       context.supabase.from('reservations')
         .select('appointment_time,duration_min,status')
         .eq('appointment_date', data.appointment_date)
+        .is('deleted_at', null)
         .neq('status', 'cancelled'),
     ]);
 
@@ -400,6 +409,7 @@ export const getAdminStats = createServerFn({ method: 'GET' })
     const { data: rows, error } = await context.supabase
       .from('reservations')
       .select('id,reference,client_name,status,source,total_price,appointment_date,appointment_time,services,created_at')
+      .is('deleted_at', null)
       .gte('appointment_date', data.start_date)
       .lte('appointment_date', data.end_date);
     if (error) throw new Error(error.message);

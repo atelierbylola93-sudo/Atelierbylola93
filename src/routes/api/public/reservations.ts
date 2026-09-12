@@ -63,6 +63,7 @@ export const Route = createFileRoute('/api/public/reservations')({
             .from('reservations')
             .select('appointment_time,duration_min')
             .eq('appointment_date', b.appointment_date)
+            .is('deleted_at', null)
             .neq('status', 'cancelled'),
         ]);
 

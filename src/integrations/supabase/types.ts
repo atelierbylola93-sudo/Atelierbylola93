@@ -101,6 +101,7 @@ export type Database = {
           client_note: string | null
           client_phone: string
           created_at: string
+          deleted_at: string | null
           duration_min: number
           id: string
           options: Json
@@ -121,6 +122,7 @@ export type Database = {
           client_note?: string | null
           client_phone: string
           created_at?: string
+          deleted_at?: string | null
           duration_min?: number
           id?: string
           options?: Json
@@ -141,6 +143,7 @@ export type Database = {
           client_note?: string | null
           client_phone?: string
           created_at?: string
+          deleted_at?: string | null
           duration_min?: number
           id?: string
           options?: Json
@@ -181,7 +184,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      reservation_period: {
+        Args: { d: string; dur: number; t: string }
+        Returns: unknown
+      }
     }
     Enums: {
       app_role: "admin"

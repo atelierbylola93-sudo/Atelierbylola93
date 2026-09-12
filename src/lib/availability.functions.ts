@@ -100,6 +100,7 @@ export const getAvailableSlots = createServerFn({ method: 'GET' })
         .from('reservations')
         .select('appointment_time,duration_min,status')
         .eq('appointment_date', data.date)
+        .is('deleted_at', null)
         .neq('status', 'cancelled'),
     ]);
 
