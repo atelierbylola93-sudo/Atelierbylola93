@@ -84,7 +84,7 @@ export const getAvailableSlots = createServerFn({ method: 'GET' })
     const [hoursRes, closedRes, blockedRes, resvRes] = await Promise.all([
       supabaseAdmin
         .from('business_hours')
-        .select('is_open,open_time,close_time')
+        .select('is_open,open_time,close_time,break_start,break_end')
         .eq('weekday', weekday)
         .maybeSingle(),
       supabaseAdmin
@@ -116,6 +116,13 @@ export const getAvailableSlots = createServerFn({ method: 'GET' })
     const closeMin = toMin(hoursRes.data.close_time as unknown as string);
 
     const busy: Array<[number, number]> = [];
+    // La pause du jour se comporte comme un creneau deja pris.
+    if (hoursRes.data.break_start && hoursRes.data.break_end) {
+      busy.push([
+        toMin(hoursRes.data.break_start as unknown as string),
+        toMin(hoursRes.data.break_end as unknown as string),
+      ]);
+    }
     (blockedRes.data ?? []).forEach((b) =>
       busy.push([
         toMin(b.start_time as unknown as string),

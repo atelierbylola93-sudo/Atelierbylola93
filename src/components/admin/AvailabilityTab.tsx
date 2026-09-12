@@ -12,7 +12,11 @@ import {
   listBlockedSlots, addBlockedSlot, deleteBlockedSlot,
 } from '@/lib/admin.functions';
 
-type BusinessHour = { id: string; weekday: number; is_open: boolean; open_time: string; close_time: string };
+type BusinessHour = {
+  id: string; weekday: number; is_open: boolean;
+  open_time: string; close_time: string;
+  break_start: string | null; break_end: string | null;
+};
 type ClosedDate = { id: string; date: string; reason: string | null };
 type BlockedSlot = { id: string; date: string; start_time: string; end_time: string; reason: string | null };
 
@@ -59,6 +63,8 @@ export function AvailabilityTab() {
         is_open: next.is_open,
         open_time: next.open_time.slice(0, 5),
         close_time: next.close_time.slice(0, 5),
+        break_start: next.break_start ? next.break_start.slice(0, 5) : null,
+        break_end: next.break_end ? next.break_end.slice(0, 5) : null,
       } });
       toast.success('Horaire enregistré');
     } catch (e) {
@@ -82,7 +88,7 @@ export function AvailabilityTab() {
           <Clock className="w-4 h-4 text-[#B88F4D]" />
           <div>
             <h2 className="font-serif text-lg text-[#2A241C]">Horaires hebdomadaires</h2>
-            <p className="text-xs text-[#6E6455]">Ouverture / fermeture par jour de la semaine</p>
+            <p className="text-xs text-[#6E6455]">Ouverture, fermeture et pause, pour chaque jour de la semaine</p>
           </div>
         </header>
         <ul className="divide-y divide-[#EFE7D2]">
@@ -101,20 +107,56 @@ export function AvailabilityTab() {
                   />
                   <span className="text-xs text-[#6E6455]">{h.is_open ? 'Ouvert' : 'Fermé'}</span>
                 </label>
-                <div className={`flex items-center gap-2 ml-auto ${!h.is_open ? 'opacity-40 pointer-events-none' : ''}`}>
-                  <input
-                    type="time"
-                    value={h.open_time.slice(0, 5)}
-                    onChange={(e) => updateHour(h, { open_time: e.target.value })}
-                    className="h-9 px-2 rounded-lg border border-[#DDCCB2] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#B88F4D]"
-                  />
-                  <span className="text-xs text-[#8B7F6E]">→</span>
-                  <input
-                    type="time"
-                    value={h.close_time.slice(0, 5)}
-                    onChange={(e) => updateHour(h, { close_time: e.target.value })}
-                    className="h-9 px-2 rounded-lg border border-[#DDCCB2] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#B88F4D]"
-                  />
+                <div className={`flex flex-wrap items-center gap-x-4 gap-y-2 ml-auto ${!h.is_open ? 'opacity-40 pointer-events-none' : ''}`}>
+                  <div className="flex items-center gap-2">
+                    <input
+                      type="time"
+                      value={h.open_time.slice(0, 5)}
+                      onChange={(e) => updateHour(h, { open_time: e.target.value })}
+                      className="h-9 px-2 rounded-lg border border-[#DDCCB2] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#B88F4D]"
+                    />
+                    <span className="text-xs text-[#8B7F6E]">→</span>
+                    <input
+                      type="time"
+                      value={h.close_time.slice(0, 5)}
+                      onChange={(e) => updateHour(h, { close_time: e.target.value })}
+                      className="h-9 px-2 rounded-lg border border-[#DDCCB2] bg-white text-sm focus:outline-none focus:ring-2 focus:ring-[#B88F4D]"
+                    />
+                  </div>
+
+                  {/* Pause recurrente : evite de bloquer midi a la main chaque jour. */}
+                  <div className="flex items-center gap-2">
+                    <label className="inline-flex items-center gap-1.5 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={!!h.break_start}
+                        onChange={(e) =>
+                          updateHour(h, e.target.checked
+                            ? { break_start: '12:00', break_end: '14:00' }
+                            : { break_start: null, break_end: null })
+                        }
+                        className="h-4 w-4 accent-[#B88F4D]"
+                      />
+                      <span className="text-xs text-[#6E6455]">Pause</span>
+                    </label>
+                    {h.break_start && h.break_end && (
+                      <>
+                        <input
+                          type="time"
+                          value={h.break_start.slice(0, 5)}
+                          onChange={(e) => updateHour(h, { break_start: e.target.value })}
+                          className="h-9 px-2 rounded-lg border border-[#DDCCB2] bg-[#F6F0DF] text-sm focus:outline-none focus:ring-2 focus:ring-[#B88F4D]"
+                        />
+                        <span className="text-xs text-[#8B7F6E]">→</span>
+                        <input
+                          type="time"
+                          value={h.break_end.slice(0, 5)}
+                          onChange={(e) => updateHour(h, { break_end: e.target.value })}
+                          className="h-9 px-2 rounded-lg border border-[#DDCCB2] bg-[#F6F0DF] text-sm focus:outline-none focus:ring-2 focus:ring-[#B88F4D]"
+                        />
+                      </>
+                    )}
+                  </div>
                 </div>
               </li>
             );

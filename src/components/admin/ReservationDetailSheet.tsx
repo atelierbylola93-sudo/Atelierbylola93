@@ -21,7 +21,7 @@ interface Props {
   onChange: () => void;
 }
 
-const STATUSES: ReservationStatus[] = ['pending', 'confirmed', 'done', 'cancelled'];
+const STATUSES: ReservationStatus[] = ['pending', 'confirmed', 'done', 'cancelled', 'no_show'];
 const METHODS: Array<{ v: Exclude<PaymentMethod, null>; label: string }> = [
   { v: 'cb', label: 'CB' }, { v: 'especes', label: 'Espèces' },
   { v: 'planity', label: 'Planity' }, { v: 'autre', label: 'Autre' },

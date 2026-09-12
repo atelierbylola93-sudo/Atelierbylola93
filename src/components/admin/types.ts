@@ -1,4 +1,4 @@
-export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled' | 'done';
+export type ReservationStatus = 'pending' | 'confirmed' | 'cancelled' | 'done' | 'no_show';
 export type PaymentStatus = 'unpaid' | 'paid';
 export type PaymentMethod = 'cb' | 'especes' | 'planity' | 'autre' | null;
 export type ReservationSource = 'site' | 'telephone' | 'instagram' | 'autre';
@@ -28,6 +28,7 @@ export const STATUS_LABEL: Record<ReservationStatus, string> = {
   confirmed: 'Confirmée',
   done: 'Terminée',
   cancelled: 'Annulée',
+  no_show: 'Absente',
 };
 
 export const STATUS_STYLE: Record<ReservationStatus, { bg: string; text: string; border: string; block: string }> = {
@@ -35,6 +36,8 @@ export const STATUS_STYLE: Record<ReservationStatus, { bg: string; text: string;
   confirmed: { bg: 'bg-emerald-50', text: 'text-emerald-800', border: 'border-emerald-200', block: 'bg-emerald-100/90 border-emerald-300 text-emerald-900' },
   done: { bg: 'bg-neutral-100', text: 'text-neutral-700', border: 'border-neutral-200', block: 'bg-neutral-100 border-neutral-300 text-neutral-600' },
   cancelled: { bg: 'bg-red-50', text: 'text-red-800', border: 'border-red-200', block: 'bg-red-50 border-red-200 text-red-800 line-through opacity-60' },
+  // Distinct de « Annulée » : la cliente n'a pas prévenu, le créneau a été perdu.
+  no_show: { bg: 'bg-rose-100', text: 'text-rose-900', border: 'border-rose-300', block: 'bg-rose-100 border-rose-400 text-rose-900 border-dashed' },
 };
 
 export const SOURCE_LABEL: Record<ReservationSource, string> = {

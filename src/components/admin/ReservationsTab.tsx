@@ -34,6 +34,7 @@ export function ReservationsTab({ reservations, loading }: Props) {
     confirmed: reservations.filter((r) => r.status === 'confirmed').length,
     done: reservations.filter((r) => r.status === 'done').length,
     cancelled: reservations.filter((r) => r.status === 'cancelled').length,
+    no_show: reservations.filter((r) => r.status === 'no_show').length,
   }), [reservations]);
 
   return (
@@ -41,7 +42,7 @@ export function ReservationsTab({ reservations, loading }: Props) {
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between mb-4">
         <div className="flex flex-wrap gap-2">
-          {(['all', 'pending', 'confirmed', 'done', 'cancelled'] as const).map((f) => (
+          {(['all', 'pending', 'confirmed', 'done', 'cancelled', 'no_show'] as const).map((f) => (
             <button
               key={f}
               onClick={() => setFilter(f)}

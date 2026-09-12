@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useServerFn } from '@tanstack/react-start';
-import { CalendarClock, Wallet, TrendingUp, Users, XCircle, Loader2 } from 'lucide-react';
+import { CalendarClock, Wallet, TrendingUp, Users, XCircle, UserX, Loader2 } from 'lucide-react';
 import {
   ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid,
   BarChart, Bar, PieChart, Pie, Cell, Legend,
@@ -17,6 +17,7 @@ interface StatsData {
     totalBookings: number;
     averageBasket: number;
     cancellationRate: number;
+    noShowRate: number;
   };
   daily: Array<{ date: string; revenue: number }>;
   topServices: Array<{ name: string; revenue: number; count: number }>;
@@ -140,9 +141,9 @@ export function StatsTab() {
       )}
 
       {/* KPIs */}
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 sm:gap-3">
+      <div className="grid grid-cols-2 lg:grid-cols-6 gap-2 sm:gap-3">
         {loading && !data ? (
-          Array.from({ length: 5 }).map((_, i) => <KpiSkeleton key={i} />)
+          Array.from({ length: 6 }).map((_, i) => <KpiSkeleton key={i} />)
         ) : data ? (
           <>
             <Kpi icon={Wallet} label="CA réalisé" value={fmtEuro(data.kpis.revenueDone)} accent />
@@ -150,6 +151,7 @@ export function StatsTab() {
             <Kpi icon={CalendarClock} label="Nombre de RDV" value={data.kpis.totalBookings.toString()} />
             <Kpi icon={Users} label="Panier moyen" value={fmtEuro(data.kpis.averageBasket)} />
             <Kpi icon={XCircle} label="Taux d'annulation" value={`${data.kpis.cancellationRate.toFixed(1)}%`} />
+            <Kpi icon={UserX} label="Taux d'absence" value={`${data.kpis.noShowRate.toFixed(1)}%`} />
           </>
         ) : null}
       </div>

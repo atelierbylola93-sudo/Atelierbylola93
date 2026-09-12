@@ -47,7 +47,7 @@ export const Route = createFileRoute('/api/public/reservations')({
         const [hoursRes, closedRes, blockedRes, resvRes] = await Promise.all([
           supabaseAdmin
             .from('business_hours')
-            .select('is_open,open_time,close_time')
+            .select('is_open,open_time,close_time,break_start,break_end')
             .eq('weekday', weekday)
             .maybeSingle(),
           supabaseAdmin
@@ -85,7 +85,24 @@ export const Route = createFileRoute('/api/public/reservations')({
           return Response.json({ error: 'Le créneau choisi est en dehors des horaires d’ouverture.' }, { status: 409 });
         }
 
+        // Message distinct : une pause de l'institut n'est pas un creneau pris
+        // par une autre cliente, et le dire evite de laisser croire a une course perdue.
+        if (hoursRes.data.break_start && hoursRes.data.break_end) {
+          const bs = toMin(hoursRes.data.break_start as unknown as string);
+          const be = toMin(hoursRes.data.break_end as unknown as string);
+          if (start < be && end > bs) {
+            return Response.json({ error: 'L’institut est fermé sur cette plage horaire. Merci de choisir un autre créneau.' }, { status: 409 });
+          }
+        }
+
         const busy: Array<[number, number]> = [];
+        // La pause du jour bloque au meme titre qu'une reservation.
+        if (hoursRes.data.break_start && hoursRes.data.break_end) {
+          busy.push([
+            toMin(hoursRes.data.break_start as unknown as string),
+            toMin(hoursRes.data.break_end as unknown as string),
+          ]);
+        }
         (blockedRes.data ?? []).forEach((x) =>
           busy.push([toMin(x.start_time as unknown as string), toMin(x.end_time as unknown as string)]),
         );

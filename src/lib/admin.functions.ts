@@ -29,10 +29,10 @@ export const listReservations = createServerFn({ method: 'GET' })
 
 export const updateReservationStatus = createServerFn({ method: 'POST' })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { id: string; status: 'pending' | 'confirmed' | 'cancelled' | 'done' }) =>
+  .inputValidator((d: { id: string; status: 'pending' | 'confirmed' | 'cancelled' | 'done' | 'no_show' }) =>
     z.object({
       id: z.string().uuid(),
-      status: z.enum(['pending', 'confirmed', 'cancelled', 'done']),
+      status: z.enum(['pending', 'confirmed', 'cancelled', 'done', 'no_show']),
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
@@ -112,25 +112,41 @@ export const listBusinessHours = createServerFn({ method: 'GET' })
 
 export const upsertBusinessHour = createServerFn({ method: 'POST' })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: { weekday: number; is_open: boolean; open_time: string; close_time: string }) =>
+  .inputValidator((d: {
+    weekday: number; is_open: boolean; open_time: string; close_time: string;
+    break_start?: string | null; break_end?: string | null;
+  }) =>
     z.object({
       weekday: z.number().int().min(0).max(6),
       is_open: z.boolean(),
       open_time: z.string().regex(/^\d{2}:\d{2}(:\d{2})?$/),
       close_time: z.string().regex(/^\d{2}:\d{2}(:\d{2})?$/),
-    }).refine((v) => v.close_time > v.open_time, { message: 'Heure de fermeture doit être après ouverture' })
+      break_start: z.string().regex(/^\d{2}:\d{2}(:\d{2})?$/).nullable().optional(),
+      break_end: z.string().regex(/^\d{2}:\d{2}(:\d{2})?$/).nullable().optional(),
+    })
+      .refine((v) => v.close_time > v.open_time, { message: 'Heure de fermeture doit être après ouverture' })
+      .refine((v) => (v.break_start == null) === (v.break_end == null), { message: 'Renseignez les deux bornes de la pause' })
+      .refine((v) => v.break_start == null || v.break_end! > v.break_start, { message: 'Fin de pause après le début' })
+      .refine((v) => v.break_start == null || (v.break_start >= v.open_time && v.break_end! <= v.close_time), { message: 'La pause doit tenir dans la journée' })
       .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { data: role } = await context.supabase
       .from('user_roles').select('role').eq('user_id', context.userId).eq('role', 'admin').maybeSingle();
     if (!role) throw new Error('Forbidden');
-    const open = data.open_time.length === 5 ? `${data.open_time}:00` : data.open_time;
-    const close = data.close_time.length === 5 ? `${data.close_time}:00` : data.close_time;
+    const pad = (t: string) => (t.length === 5 ? `${t}:00` : t);
+    const open = pad(data.open_time);
+    const close = pad(data.close_time);
+    const bStart = data.break_start ? pad(data.break_start) : null;
+    const bEnd = data.break_end ? pad(data.break_end) : null;
     const { error } = await context.supabase
       .from('business_hours')
       .upsert(
-        { weekday: data.weekday, is_open: data.is_open, open_time: open, close_time: close },
+        {
+          weekday: data.weekday, is_open: data.is_open,
+          open_time: open, close_time: close,
+          break_start: bStart, break_end: bEnd,
+        },
         { onConflict: 'weekday' },
       );
     if (error) throw new Error(error.message);
@@ -332,7 +348,7 @@ export const createManualReservation = createServerFn({ method: 'POST' })
 
     const [hoursRes, closedRes, blockedRes, resvRes] = await Promise.all([
       context.supabase.from('business_hours')
-        .select('is_open,open_time,close_time').eq('weekday', weekday).maybeSingle(),
+        .select('is_open,open_time,close_time,break_start,break_end').eq('weekday', weekday).maybeSingle(),
       context.supabase.from('closed_dates')
         .select('date').eq('date', data.appointment_date).maybeSingle(),
       context.supabase.from('blocked_slots')
@@ -353,6 +369,13 @@ export const createManualReservation = createServerFn({ method: 'POST' })
       throw new Error('CONFLICT: hors horaires');
     }
     const conflicts: Array<[number, number]> = [];
+    // La pause de la journee bloque comme un creneau occupe.
+    if (hoursRes.data.break_start && hoursRes.data.break_end) {
+      conflicts.push([
+        toMinLocal(hoursRes.data.break_start as string),
+        toMinLocal(hoursRes.data.break_end as string),
+      ]);
+    }
     (blockedRes.data ?? []).forEach((b) =>
       conflicts.push([toMinLocal(b.start_time as string), toMinLocal(b.end_time as string)]),
     );
@@ -416,7 +439,7 @@ export const getAdminStats = createServerFn({ method: 'GET' })
 
     type Row = {
       id: string; reference: string; client_name: string;
-      status: 'pending' | 'confirmed' | 'cancelled' | 'done';
+      status: 'pending' | 'confirmed' | 'cancelled' | 'done' | 'no_show';
       source: 'site' | 'telephone' | 'instagram' | 'autre';
       total_price: number; appointment_date: string; appointment_time: string;
       services: Array<{ name: string; price: number }>; created_at: string;
@@ -426,8 +449,11 @@ export const getAdminStats = createServerFn({ method: 'GET' })
     // KPIs — CA réalisé = uniquement 'done'
     const doneRows = list.filter((r) => r.status === 'done');
     const confirmedUpcomingRows = list.filter((r) => r.status === 'confirmed');
-    const nonCancelled = list.filter((r) => r.status !== 'cancelled');
+    // Une absence n'est pas un rendez-vous honore : elle ne doit ni gonfler le
+    // nombre de RDV ni tirer le panier moyen.
+    const nonCancelled = list.filter((r) => r.status !== 'cancelled' && r.status !== 'no_show');
     const cancelled = list.filter((r) => r.status === 'cancelled');
+    const noShows = list.filter((r) => r.status === 'no_show');
 
     const revenueDone = doneRows.reduce((s, r) => s + Number(r.total_price || 0), 0);
     const revenueForecast = confirmedUpcomingRows.reduce((s, r) => s + Number(r.total_price || 0), 0);
@@ -438,6 +464,9 @@ export const getAdminStats = createServerFn({ method: 'GET' })
     const totalIncludingCancelled = list.length;
     const cancellationRate = totalIncludingCancelled > 0
       ? (cancelled.length / totalIncludingCancelled) * 100
+      : 0;
+    const noShowRate = totalIncludingCancelled > 0
+      ? (noShows.length / totalIncludingCancelled) * 100
       : 0;
 
     // Série CA par jour (basé sur done)
@@ -500,6 +529,7 @@ export const getAdminStats = createServerFn({ method: 'GET' })
         totalBookings,
         averageBasket,
         cancellationRate,
+        noShowRate,
       },
       daily,
       topServices,

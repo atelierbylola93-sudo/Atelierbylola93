@@ -201,6 +201,7 @@ export function AgendaTab({ reservations, loading, onOpenReservation, onOpenEmpt
         <LegendDot className="bg-amber-100 border-amber-300" label="En attente" />
         <LegendDot className="bg-emerald-100 border-emerald-300" label="Confirmée" />
         <LegendDot className="bg-neutral-100 border-neutral-300" label="Terminée" />
+        <LegendDot className="bg-rose-100 border-rose-400" label="Absente" />
         <span className="ml-auto">Cliquez sur un créneau vide pour créer un RDV</span>
       </div>
     </section>
