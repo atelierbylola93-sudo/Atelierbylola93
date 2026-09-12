@@ -255,3 +255,13 @@ body.grid-on .grid-overlay {
 }
 
 
+
+/* Zones tactiles du pied de page.
+   Ses liens sont du texte nu, hauts de 16 px : quasi impossibles a viser au
+   pouce. La recommandation d'accessibilite est de 44 px de cote au minimum.
+   Une regle ici evite d'alourdir seize balises avec les memes classes. */
+#main-footer a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
