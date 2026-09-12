@@ -74,7 +74,7 @@ export default function App({ currentPage = 'accueil' }: { currentPage?: Page })
         <Header currentPage={currentPage} onNavigate={handleNavigate} />
 
         {/* Animated Main Content Stage */}
-        <main id="main-content" className="relative overflow-hidden">
+        <main id="main-content" className="relative overflow-x-clip">
           <AnimatePresence mode="wait">
             <motion.div
               key={currentPage}

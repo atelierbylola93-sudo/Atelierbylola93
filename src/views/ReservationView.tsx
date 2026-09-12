@@ -83,6 +83,7 @@ export default function ReservationView() {
   // Availability map (date iso -> open?) sourced from server
   const [openDates, setOpenDates] = useState<Record<string, boolean>>({});
   const [availableSlots, setAvailableSlots] = useState<string[]>([]);
+  const [slotsError, setSlotsError] = useState<boolean>(false);
 
   const totalDurationMin = useMemo(() => {
     return selectedServices.reduce((acc, s) => acc + s.duration_min, 0);
@@ -120,17 +121,22 @@ export default function ReservationView() {
     async (date: string) => {
       if (!date) {
         setAvailableSlots([]);
+        setSlotsError(false);
         return;
       }
       setIsSyncingSlots(true);
+      setSlotsError(false);
       try {
         const res = await getAvailableSlots({
           data: { date, duration_min: totalDurationMin || 60 },
         });
         setAvailableSlots(res.slots);
       } catch (err) {
+        // Un echec serveur n'est pas une absence de creneaux. Afficher "complet"
+        // ferait fuir une cliente alors que l'institut est ouvert et libre.
         console.error('slots fetch failed', err);
         setAvailableSlots([]);
+        setSlotsError(true);
       } finally {
         setIsSyncingSlots(false);
       }
@@ -783,6 +789,15 @@ export default function ReservationView() {
             <div className="h-5 w-5 border-2 border-t-transparent border-[#B88F4D] rounded-full animate-spin" />
             <span className="text-sm text-gray-500 italic">Lecture des disponibilités…</span>
           </div>
+        ) : slotsError ? (
+          <div
+            role="alert"
+            className="border border-red-200 bg-red-50 p-6 rounded-2xl text-center text-sm text-red-800"
+          >
+            <strong className="font-semibold">Affichage des horaires momentanement indisponible.</strong>
+            <br />
+            Merci de reessayer dans un instant, ou d'appeler l'institut au 06 60 10 04 31.
+          </div>
         ) : availableSlots.length === 0 ? (
           <div className="border border-dashed border-[#B88F4D]/30 p-6 rounded-2xl text-center text-sm text-gray-500 bg-[#FCFCFB]">
             Aucun créneau disponible pour cette date. Merci d’en choisir une autre.
@@ -1156,6 +1171,27 @@ export default function ReservationView() {
                   <Sparkles className="h-4 w-4" style={{ color: GOLD }} />
                 </div>
                 {renderCartLines()}
+
+                {/* Sans ce bouton, le seul CTA du desktop est en bas de la colonne
+                    de gauche, apres tout le catalogue : il faut scroller pour le
+                    trouver. Ici il reste visible, comme la barre fixe du mobile. */}
+                <div className="mt-4 pt-4 border-t border-slate-100 space-y-2">
+                  <button
+                    onClick={handlePrimaryCta}
+                    disabled={primaryCtaDisabled}
+                    className="w-full h-12 rounded-xl bg-charcoal hover:bg-[#B88F4D] text-white text-sm font-semibold transition disabled:bg-slate-200 disabled:text-gray-400 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                  >
+                    {primaryCtaLabel} <ArrowRight className="h-4 w-4" />
+                  </button>
+                  {step > 1 && (
+                    <button
+                      onClick={() => setStep(step - 1)}
+                      className="w-full h-11 rounded-xl bg-slate-50 hover:bg-slate-100 text-charcoal text-sm font-semibold transition flex items-center justify-center gap-2"
+                    >
+                      <ArrowLeft className="h-4 w-4" /> Retour
+                    </button>
+                  )}
+                </div>
               </div>
 
               <div className="p-4 bg-[#EFE7D2]/50 rounded-2xl flex items-start gap-2.5">
