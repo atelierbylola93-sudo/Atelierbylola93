@@ -265,3 +265,55 @@ body.grid-on .grid-overlay {
   align-items: center;
   min-height: 44px;
 }
+
+/* Haute Parfumerie & Luxury Spa Utilities */
+.arch-frame {
+  border-top-left-radius: 9999px;
+  border-top-right-radius: 9999px;
+  border-bottom-left-radius: 28px;
+  border-bottom-right-radius: 28px;
+}
+
+.gold-glow {
+  box-shadow: 0 0 35px -5px rgba(184, 143, 77, 0.28);
+}
+
+.gold-glow-lg {
+  box-shadow: 0 0 60px -10px rgba(184, 143, 77, 0.35);
+}
+
+@keyframes goldShimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
+.btn-gold-cinematic {
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, #B88F4D 0%, #C9A25E 50%, #B88F4D 100%);
+  color: #FFFFFF;
+  border: 1px solid rgba(223, 196, 139, 0.5);
+  box-shadow: 0 10px 30px -5px rgba(184, 143, 77, 0.4);
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-gold-cinematic::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.25), transparent);
+  transform: translateX(-150%);
+  transition: none;
+}
+
+.btn-gold-cinematic:hover::after {
+  animation: goldShimmer 1.4s ease infinite;
+}
+
+.btn-gold-cinematic:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 38px -5px rgba(184, 143, 77, 0.55);
+}

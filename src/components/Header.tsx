@@ -32,25 +32,32 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const isTransparent = currentPage === 'accueil' && !isScrolled;
+
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 px-4 md:px-12 ${
-        isScrolled
-          ? 'py-3.5 glass-header shadow-sm bg-[#EFE7D2]/95 backdrop-blur-md border-b border-[#B88F4D]/15'
-          : 'py-5 bg-[#EFE7D2]/80 backdrop-blur-sm'
+        isTransparent
+          ? 'py-6 bg-gradient-to-b from-black/70 via-black/25 to-transparent border-transparent'
+          : isScrolled
+            ? 'py-3.5 glass-header shadow-sm bg-[#EFE7D2]/95 backdrop-blur-md border-b border-[#B88F4D]/15'
+            : 'py-5 bg-[#EFE7D2]/80 backdrop-blur-sm'
       }`}
     >
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         
         {/* LOGO AREA */}
         <a href={pagePath('accueil')}
-          
           className="flex flex-col items-center focus:outline-none cursor-pointer group select-none"
         >
-          <span className={`font-serif text-xl md:text-2xl font-bold tracking-[0.2em] transition-colors duration-300 text-charcoal group-hover:text-[#B88F4D]`}>
+          <span className={`font-serif text-xl md:text-2xl font-bold tracking-[0.2em] transition-colors duration-300 ${
+            isTransparent ? 'text-white group-hover:text-[#DFC48B]' : 'text-charcoal group-hover:text-[#B88F4D]'
+          }`}>
             L'ATELIER
           </span>
-          <span className={`text-[10px] tracking-[0.3em] font-semibold uppercase mt-[-4px] transition-colors duration-300 text-[#B88F4D] group-hover:text-[#A17E60]`}>
+          <span className={`text-[10px] tracking-[0.3em] font-semibold uppercase mt-[-4px] transition-colors duration-300 ${
+            isTransparent ? 'text-[#DFC48B]' : 'text-[#B88F4D] group-hover:text-[#A17E60]'
+          }`}>
             by lola
           </span>
         </a>
@@ -61,18 +68,19 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
             {NAV_ITEMS.slice(0, 5).map((item) => (
               <li key={item.page}>
                 <a href={pagePath(item.page)}
-                  
                   className={`relative py-1 text-[11px] xl:text-xs uppercase tracking-[0.16em] xl:tracking-[0.2em] font-medium whitespace-nowrap transition-colors duration-300 cursor-pointer ${
                     currentPage === item.page
-                      ? 'text-[#B88F4D]'
-                      : 'text-charcoal hover:text-[#B88F4D]'
+                      ? isTransparent ? 'text-[#DFC48B]' : 'text-[#B88F4D]'
+                      : isTransparent ? 'text-white/85 hover:text-white' : 'text-charcoal hover:text-[#B88F4D]'
                   }`}
                 >
                   {item.name}
                   {currentPage === item.page && (
                     <motion.div
                       layoutId="activeDot"
-                      className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-[#B88F4D]"
+                      className={`absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full ${
+                        isTransparent ? 'bg-[#DFC48B]' : 'bg-[#B88F4D]'
+                      }`}
                       transition={{ type: 'spring', stiffness: 380, damping: 30 }}
                     />
                   )}
@@ -83,10 +91,12 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
             {/* SERVICES DROPDOWN SELECTOR FOR LUX NAVIGATION */}
             <li className="relative group">
               <button
-                className={`py-1 text-[11px] xl:text-xs uppercase tracking-[0.16em] xl:tracking-[0.2em] font-medium whitespace-nowrap transition-colors duration-300 flex items-center gap-1 cursor-pointer text-charcoal hover:text-[#B88F4D]`}
+                className={`py-1 text-[11px] xl:text-xs uppercase tracking-[0.16em] xl:tracking-[0.2em] font-medium whitespace-nowrap transition-colors duration-300 flex items-center gap-1 cursor-pointer ${
+                  isTransparent ? 'text-white/85 hover:text-white' : 'text-charcoal hover:text-[#B88F4D]'
+                }`}
               >
                 Autres Prestations
-                <span className="text-[11px] text-[#B88F4D]">▼</span>
+                <span className={`text-[11px] ${isTransparent ? 'text-[#DFC48B]' : 'text-[#B88F4D]'}`}>▼</span>
               </button>
               
               <div className="absolute top-full right-0 mt-2 w-72 glass-premium border border-[#B88F4D]/25 rounded-[24px] p-4 opacity-0 scale-95 pointer-events-none group-hover:opacity-100 group-focus-within:opacity-100 group-hover:scale-100 group-focus-within:scale-100 group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-all duration-300 shadow-xl bg-white/95 backdrop-blur-md">
@@ -113,8 +123,11 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
 
           {/* CTA RESERVATION */}
           <motion.a href={pagePath('reservation')}
-            
-            className="ml-4 btn-primary flex items-center gap-2 !py-3 !px-6 !text-[11px] cursor-pointer"
+            className={`ml-4 btn-primary flex items-center gap-2 !py-3 !px-6 !text-[11px] cursor-pointer shadow-md ${
+              isTransparent
+                ? '!bg-[#B88F4D] !text-white border border-[#DFC48B]/50 hover:!bg-white hover:!text-charcoal'
+                : ''
+            }`}
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.98 }}
           >
@@ -127,7 +140,9 @@ export default function Header({ currentPage, onNavigate }: HeaderProps) {
         <div className="flex lg:hidden items-center gap-3">
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="p-2 transition-colors focus:outline-none cursor-pointer text-charcoal hover:text-[#B88F4D]"
+            className={`p-2 transition-colors focus:outline-none cursor-pointer ${
+              isTransparent ? 'text-white hover:text-[#DFC48B]' : 'text-charcoal hover:text-[#B88F4D]'
+            }`}
             aria-label="Menu principal" aria-expanded={isMobileMenuOpen}
           >
             {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}

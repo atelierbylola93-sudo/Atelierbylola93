@@ -95,3 +95,37 @@ export function horairesJsonLd(jours: JourOuverture[]) {
   }
   return specs;
 }
+
+/**
+ * Résumé en deux mots pour un bandeau de chiffres.
+ *
+ * Retient le plus grand groupe de jours ouverts consécutifs — celui qui
+ * représente le rythme habituel de l'institut.
+ * Rend par exemple : { jours: 'Lun – Sam', horaires: '10h00 – 19h00' }
+ */
+export function resumeCompact(jours: JourOuverture[]): { jours: string; horaires: string } | null {
+  const ouverts = jours.filter((j) => j.is_open);
+  if (!ouverts.length) return null;
+
+  const tries = [...ouverts].sort((a, b) => ordreFr(a) - ordreFr(b));
+  const groupes: JourOuverture[][] = [];
+  for (const j of tries) {
+    const dernier = groupes[groupes.length - 1];
+    const precedent = dernier?.[dernier.length - 1];
+    if (precedent && signature(precedent) === signature(j) && ordreFr(j) === ordreFr(precedent) + 1) {
+      dernier.push(j);
+    } else {
+      groupes.push([j]);
+    }
+  }
+
+  const principal = groupes.sort((a, b) => b.length - a.length)[0];
+  const court = (w: number) => JOURS_FR[w].slice(0, 3);
+  const debut = principal[0];
+  const fin = principal[principal.length - 1];
+
+  return {
+    jours: principal.length === 1 ? JOURS_FR[debut.weekday] : `${court(debut.weekday)} – ${court(fin.weekday)}`,
+    horaires: `${formatHeure(debut.open_time)} – ${formatHeure(debut.close_time)}`,
+  };
+}
