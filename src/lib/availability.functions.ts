@@ -16,6 +16,58 @@ function toHHMM(mins: number): string {
 }
 
 /**
+ * Public : catalogue des prestations actives, promotions comprises.
+ *
+ * Lu avec la clé de service : la table est en lecture ouverte, mais passer par
+ * le serveur évite un aller-retour depuis le navigateur et permet de servir le
+ * catalogue dès le rendu initial.
+ */
+export const getCataloguePublic = createServerFn({ method: 'GET' }).handler(async () => {
+  const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+
+  const [presta, finitions] = await Promise.all([
+    supabaseAdmin
+      .from('services')
+      .select('id,name,category,description,price,duration_min,duration_label,price_on_quote,price_note,promo_price,promo_start,promo_end')
+      .eq('active', true)
+      .order('sort_order', { ascending: true }),
+    supabaseAdmin
+      .from('service_upsells')
+      .select('id,service_id,name,price,description')
+      .eq('active', true)
+      .order('sort_order', { ascending: true }),
+  ]);
+
+  if (presta.error) throw new Error(presta.error.message);
+  if (finitions.error) throw new Error(finitions.error.message);
+
+  const parService = new Map<string, Array<{ id: string; name: string; price: number; description: string }>>();
+  for (const f of finitions.data ?? []) {
+    const liste = parService.get(f.service_id) ?? [];
+    liste.push({ id: f.id, name: f.name, price: Number(f.price), description: f.description });
+    parService.set(f.service_id, liste);
+  }
+
+  const catalogue = (presta.data ?? []).map((s) => ({
+    id: s.id,
+    name: s.name,
+    category: s.category,
+    description: s.description,
+    price: Number(s.price),
+    duration_min: s.duration_min,
+    duration_label: s.duration_label,
+    price_on_quote: s.price_on_quote,
+    price_note: s.price_note,
+    promo_price: s.promo_price === null ? null : Number(s.promo_price),
+    promo_start: s.promo_start,
+    promo_end: s.promo_end,
+    upsells: parService.get(s.id) ?? [],
+  }));
+
+  return { catalogue };
+});
+
+/**
  * Public : horaires hebdomadaires de l'institut.
  *
  * Ils étaient écrits en dur dans le site et contredisaient la base. Les lire

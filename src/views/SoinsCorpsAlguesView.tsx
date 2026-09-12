@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { Calendar, CheckCircle2, Star, Sparkles } from 'lucide-react';
 import { SOINS_CORPS_ALGUES_DATA, INSTITUT_INFO, LUXURY_IMAGES } from '../data';
 import FaqSection from '../components/FaqSection';
+import PrixVitrine from '../components/PrixVitrine';
 
 export default function SoinsCorpsAlguesView() {
   return (
@@ -76,7 +77,7 @@ export default function SoinsCorpsAlguesView() {
                       {item.name}
                     </h4>
                     <span className="font-serif text-lg font-bold text-[#B88F4D] shrink-0 whitespace-nowrap">
-                      {item.price} €
+                      <PrixVitrine nom={item.name} prix={item.price} />
                     </span>
                   </div>
 

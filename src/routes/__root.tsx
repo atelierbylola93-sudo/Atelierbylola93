@@ -10,8 +10,9 @@ import {
 import { type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
-import { getBusinessHoursPublic } from "../lib/availability.functions";
+import { getBusinessHoursPublic, getCataloguePublic } from "../lib/availability.functions";
 import type { JourOuverture } from "../lib/opening-hours";
+import type { PrestationBase } from "../lib/catalogue";
 
 function NotFoundComponent() {
   return (
@@ -105,14 +106,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   // page, le bloc contact et les données structurées y puisent. Un échec ne
   // doit jamais empêcher le site de s'afficher — on rend alors une liste vide
   // et chaque composant retombe sur son texte de repli.
-  loader: async (): Promise<{ hours: JourOuverture[] }> => {
-    try {
-      const { hours } = await getBusinessHoursPublic();
-      return { hours: hours as JourOuverture[] };
-    } catch (error) {
-      console.error('[horaires] lecture impossible', error);
-      return { hours: [] };
-    }
+  loader: async (): Promise<{ hours: JourOuverture[]; catalogue: PrestationBase[] }> => {
+    // Les deux lectures sont indépendantes : un catalogue indisponible ne doit
+    // pas priver le site de ses horaires, et inversement. Chacune retombe sur
+    // une liste vide, que les composants savent interpréter.
+    const [hours, catalogue] = await Promise.all([
+      getBusinessHoursPublic()
+        .then((r) => r.hours as JourOuverture[])
+        .catch((error) => {
+          console.error('[horaires] lecture impossible', error);
+          return [] as JourOuverture[];
+        }),
+      getCataloguePublic()
+        .then((r) => r.catalogue as PrestationBase[])
+        .catch((error) => {
+          console.error('[catalogue] lecture impossible', error);
+          return [] as PrestationBase[];
+        }),
+    ]);
+    return { hours, catalogue };
   },
   staleTime: 5 * 60 * 1000,
   shellComponent: RootShell,

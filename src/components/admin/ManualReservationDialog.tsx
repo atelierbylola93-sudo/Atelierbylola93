@@ -3,7 +3,8 @@ import { useServerFn } from '@tanstack/react-start';
 import { X, Loader2, Check, Plus, Minus } from 'lucide-react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { SERVICE_CATALOG, CATALOG_CATEGORIES, formatCatalogDuration, type CatalogService } from '@/lib/service-catalog';
+import { useCatalogue, useCategoriesCatalogue } from '@/lib/use-catalogue';
+import { formatDuree, type PrestationAffichee } from '@/lib/catalogue';
 import { getAvailableSlots } from '@/lib/availability.functions';
 import { createManualReservation } from '@/lib/admin.functions';
 
@@ -17,6 +18,11 @@ interface Props {
 type Source = 'telephone' | 'instagram' | 'autre' | 'site';
 
 export function ManualReservationDialog({ open, onOpenChange, prefill, onCreated }: Props) {
+  // Meme catalogue que le site public : un tarif modifie s'applique aussi aux
+  // rendez-vous saisis a la main.
+  const catalogue = useCatalogue();
+  const categories = useCategoriesCatalogue();
+
   const slotsFn = useServerFn(getAvailableSlots);
   const createFn = useServerFn(createManualReservation);
 
@@ -25,7 +31,7 @@ export function ManualReservationDialog({ open, onOpenChange, prefill, onCreated
   const [email, setEmail] = useState('');
   const [note, setNote] = useState('');
   const [category, setCategory] = useState('Tous');
-  const [selected, setSelected] = useState<CatalogService[]>([]);
+  const [selected, setSelected] = useState<PrestationAffichee[]>([]);
   const [date, setDate] = useState('');
   const [time, setTime] = useState('');
   const [slots, setSlots] = useState<string[]>([]);
@@ -72,11 +78,11 @@ export function ManualReservationDialog({ open, onOpenChange, prefill, onCreated
     if (slots.length > 0 && !slots.includes(time)) setTime('');
   }, [slots, time]);
 
-  const toggleService = (s: CatalogService) => {
+  const toggleService = (s: PrestationAffichee) => {
     setSelected((prev) => prev.some((x) => x.id === s.id) ? prev.filter((x) => x.id !== s.id) : [...prev, s]);
   };
 
-  const filteredCatalog = category === 'Tous' ? SERVICE_CATALOG : SERVICE_CATALOG.filter((s) => s.category === category);
+  const filteredCatalog = category === 'Tous' ? catalogue : catalogue.filter((s) => s.category === category);
 
   const canSubmit = name.trim().length > 0 && phone.trim().length >= 6 && selected.length > 0 && date && time && !submitting;
 
@@ -156,7 +162,7 @@ export function ManualReservationDialog({ open, onOpenChange, prefill, onCreated
             <div className="flex items-center justify-between mb-2 gap-2 flex-wrap">
               <p className="text-[10px] uppercase tracking-widest text-[#8B7F6E]">Prestations *</p>
               <div className="flex gap-1 overflow-x-auto max-w-full">
-                {CATALOG_CATEGORIES.map((c) => (
+                {categories.map((c) => (
                   <button key={c} onClick={() => setCategory(c)}
                     className={`h-7 px-2.5 rounded-full text-[11px] shrink-0 border transition-colors ${
                       category === c ? 'bg-[#2A241C] text-white border-[#2A241C]' : 'bg-white text-[#2A241C] border-[#DDCCB2] hover:bg-[#EFE7D2]'
@@ -185,7 +191,7 @@ export function ManualReservationDialog({ open, onOpenChange, prefill, onCreated
                       </span>
                       <span className="flex-1 min-w-0">
                         <span className="block text-sm font-medium text-[#2A241C] truncate">{s.name}</span>
-                        <span className="block text-xs text-[#6E6455]">{formatCatalogDuration(s.duration_min)} • {s.category}</span>
+                        <span className="block text-xs text-[#6E6455]">{formatDuree(s.duration_min)} • {s.category}</span>
                       </span>
                       <span className="text-sm font-semibold text-[#B88F4D]">{s.priceOnQuote ? 'Sur devis' : `${s.price} €`}</span>
                     </button>
@@ -196,7 +202,7 @@ export function ManualReservationDialog({ open, onOpenChange, prefill, onCreated
             {selected.length > 0 && (
               <div className="mt-3 p-3 rounded-lg bg-[#F6F0DF] border border-[#DDCCB2] flex items-center justify-between">
                 <div className="text-xs text-[#6E6455]">
-                  {selected.length} prestation{selected.length > 1 ? 's' : ''} • {formatCatalogDuration(duration_min)}
+                  {selected.length} prestation{selected.length > 1 ? 's' : ''} • {formatDuree(duration_min)}
                 </div>
                 <div className="text-base font-semibold text-[#B88F4D]">{selected.some((x) => x.priceOnQuote) ? (total_price > 0 ? `${total_price} € + sur devis` : 'Sur devis') : `${total_price} €`}</div>
               </div>

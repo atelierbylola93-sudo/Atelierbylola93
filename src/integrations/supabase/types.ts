@@ -164,6 +164,96 @@ export type Database = {
         }
         Relationships: []
       }
+      service_upsells: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string
+          id: string
+          name: string
+          price: number
+          service_id: string
+          sort_order: number
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          id: string
+          name: string
+          price?: number
+          service_id: string
+          sort_order?: number
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string
+          id?: string
+          name?: string
+          price?: number
+          service_id?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
+      services: {
+        Row: {
+          active: boolean
+          category: string
+          created_at: string
+          description: string
+          duration_label: string
+          duration_min: number
+          id: string
+          name: string
+          price: number
+          price_note: string | null
+          price_on_quote: boolean
+          promo_end: string | null
+          promo_price: number | null
+          promo_start: string | null
+          sort_order: number
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          category: string
+          created_at?: string
+          description?: string
+          duration_label?: string
+          duration_min?: number
+          id: string
+          name: string
+          price?: number
+          price_note?: string | null
+          price_on_quote?: boolean
+          promo_end?: string | null
+          promo_price?: number | null
+          promo_start?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          category?: string
+          created_at?: string
+          description?: string
+          duration_label?: string
+          duration_min?: number
+          id?: string
+          name?: string
+          price?: number
+          price_note?: string | null
+          price_on_quote?: boolean
+          promo_end?: string | null
+          promo_price?: number | null
+          promo_start?: string | null
+          sort_order?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string

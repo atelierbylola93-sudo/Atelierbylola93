@@ -1,6 +1,7 @@
 import { motion } from 'motion/react';
 import { Sparkles, ArrowRight, Heart, Calendar, HelpCircle } from 'lucide-react';
 import { COIFFURE_SERVICES, INSTITUT_INFO } from '../data';
+import PrixVitrine from '../components/PrixVitrine';
 
 export default function CoiffureView() {
   return (
@@ -84,7 +85,7 @@ export default function CoiffureView() {
                         </div>
                       ) : (
                         <span className="font-serif text-lg font-bold text-[#B88F4D] shrink-0 whitespace-nowrap">
-                          {typeof item.price === 'number' ? `${item.price} €` : item.price}
+                          <PrixVitrine nom={item.name} prix={item.price} />
                           {item.priceNote && (
                             <sup className="ml-0.5 text-[10px] md:text-xs">*</sup>
                           )}

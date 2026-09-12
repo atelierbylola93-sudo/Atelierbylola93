@@ -1,5 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { reservationSchema, priceBooking, parisNow } from '@/lib/booking-validation';
+import { reservationSchema, priceBooking, parisNow, CATALOGUE_DE_REPLI } from '@/lib/booking-validation';
+import { getCataloguePublic } from '@/lib/availability.functions';
 
 
 
@@ -27,8 +28,20 @@ export const Route = createFileRoute('/api/public/reservations')({
         if (!parsed.success) {
           return Response.json({ error: 'Invalid payload', details: parsed.error.flatten() }, { status: 400 });
         }
+
+        // Le tarif facturé vient de la base, promotions comprises. En cas de
+        // lecture impossible on retombe sur le catalogue figé plutôt que de
+        // refuser la réservation.
+        let catalogue = CATALOGUE_DE_REPLI;
+        try {
+          const res = await getCataloguePublic();
+          if (res.catalogue.length) catalogue = res.catalogue as typeof catalogue;
+        } catch (error) {
+          console.error('[reservations] catalogue indisponible, repli sur le catalogue figé', error);
+        }
+
         let priced;
-        try { priced = priceBooking(parsed.data); } catch (error) {
+        try { priced = priceBooking(parsed.data, catalogue); } catch (error) {
           return Response.json({ error: error instanceof Error ? error.message : 'Sélection invalide.' }, { status: 400 });
         }
         const b = { ...parsed.data, ...priced, reference: 'LOL-' + crypto.randomUUID().toUpperCase() };

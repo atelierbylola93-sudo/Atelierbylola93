@@ -11,5 +11,6 @@ const racine = getRouteApi('__root__');
  */
 export function useHoraires(): JourOuverture[] {
   const data = racine.useLoaderData() as { hours?: JourOuverture[] } | undefined;
+  // Le même chargement racine sert aussi le catalogue — voir use-catalogue.ts.
   return data?.hours ?? [];
 }

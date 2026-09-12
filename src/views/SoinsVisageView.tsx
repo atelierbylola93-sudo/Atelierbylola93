@@ -3,6 +3,7 @@ import { Calendar, CheckCircle2, Sparkles } from 'lucide-react';
 import { SOINS_VISAGE_DATA, LUXURY_IMAGES } from '../data';
 import FaqSection from '../components/FaqSection';
 import LocalSeoSection from '../components/LocalSeoSection';
+import PrixVitrine from '../components/PrixVitrine';
 
 export default function SoinsVisageView() {
   return (
@@ -71,7 +72,7 @@ export default function SoinsVisageView() {
                       {item.name}
                     </h4>
                     <span className="font-serif text-lg font-bold text-[#B88F4D] shrink-0 whitespace-nowrap">
-                      {item.price} €
+                      <PrixVitrine nom={item.name} prix={item.price} />
                     </span>
                   </div>
 

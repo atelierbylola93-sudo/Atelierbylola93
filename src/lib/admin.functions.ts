@@ -1,6 +1,8 @@
 import { createServerFn } from '@tanstack/react-start';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { z } from 'zod';
+import { formatDuree } from './catalogue';
+import type { TablesUpdate } from '@/integrations/supabase/types';
 
 // NOTE: pour rester compatible avec le splitter de server functions, chaque
 // handler embarque sa propre vérification admin (pas de helper sibling).
@@ -536,4 +538,143 @@ export const getAdminStats = createServerFn({ method: 'GET' })
       bySource,
       recent,
     };
+  });
+
+// ---------- Catalogue : tarifs et promotions ----------
+
+/** Catalogue complet, prestations désactivées comprises. */
+export const listCatalogueAdmin = createServerFn({ method: 'GET' })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data: role } = await context.supabase
+      .from('user_roles').select('role').eq('user_id', context.userId).eq('role', 'admin').maybeSingle();
+    if (!role) throw new Error('Forbidden');
+
+    const [presta, finitions] = await Promise.all([
+      context.supabase.from('services').select('*').order('sort_order', { ascending: true }),
+      context.supabase.from('service_upsells').select('*').order('sort_order', { ascending: true }),
+    ]);
+    if (presta.error) throw new Error(presta.error.message);
+    if (finitions.error) throw new Error(finitions.error.message);
+    return { services: presta.data ?? [], upsells: finitions.data ?? [] };
+  });
+
+/**
+ * Modifie une prestation.
+ *
+ * Le libellé de durée est recalculé à partir des minutes : l'institut n'a
+ * qu'un champ à tenir, et les deux ne peuvent pas se contredire.
+ */
+export const updateService = createServerFn({ method: 'POST' })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: {
+    id: string; name?: string; description?: string;
+    price?: number; duration_min?: number; active?: boolean;
+  }) =>
+    z.object({
+      id: z.string().min(1).max(120),
+      name: z.string().trim().min(1).max(200).optional(),
+      description: z.string().trim().max(1000).optional(),
+      price: z.number().nonnegative().max(100000).optional(),
+      duration_min: z.number().int().min(5).max(1440).optional(),
+      active: z.boolean().optional(),
+    }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: role } = await context.supabase
+      .from('user_roles').select('role').eq('user_id', context.userId).eq('role', 'admin').maybeSingle();
+    if (!role) throw new Error('Forbidden');
+
+    const patch: TablesUpdate<'services'> = {};
+    if (data.name !== undefined) patch.name = data.name;
+    if (data.description !== undefined) patch.description = data.description;
+    if (data.price !== undefined) patch.price = data.price;
+    if (data.active !== undefined) patch.active = data.active;
+    if (data.duration_min !== undefined) {
+      patch.duration_min = data.duration_min;
+      patch.duration_label = formatDuree(data.duration_min);
+    }
+    if (Object.keys(patch).length === 0) return { ok: true };
+
+    const { error } = await context.supabase.from('services').update(patch).eq('id', data.id);
+    if (error) {
+      // Baisser un tarif sous le prix promotionnel en cours rendrait la
+      // promotion absurde : la base refuse, on l'explique.
+      if (error.message.includes('services_promo_check')) {
+        throw new Error('Ce tarif est incompatible avec la promotion en cours. Retirez d\u2019abord la promotion.');
+      }
+      throw new Error(error.message);
+    }
+    return { ok: true };
+  });
+
+/**
+ * Pose ou retire une promotion.
+ *
+ * Une date de fin est obligatoire : sans elle, une offre lancée un mois se
+ * vend encore au même prix six mois plus tard.
+ */
+export const setServicePromo = createServerFn({ method: 'POST' })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: {
+    id: string; promo_price: number | null; promo_start: string | null; promo_end: string | null;
+  }) =>
+    z.object({
+      id: z.string().min(1).max(120),
+      promo_price: z.number().nonnegative().max(100000).nullable(),
+      promo_start: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
+      promo_end: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable(),
+    })
+      .refine(
+        (v) => (v.promo_price === null && v.promo_start === null && v.promo_end === null)
+          || (v.promo_price !== null && v.promo_start !== null && v.promo_end !== null),
+        { message: 'Une promotion demande un tarif, une date de début et une date de fin.' },
+      )
+      .refine((v) => v.promo_end === null || v.promo_end >= v.promo_start!, {
+        message: 'La date de fin doit suivre la date de début.',
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: role } = await context.supabase
+      .from('user_roles').select('role').eq('user_id', context.userId).eq('role', 'admin').maybeSingle();
+    if (!role) throw new Error('Forbidden');
+
+    const { error } = await context.supabase
+      .from('services')
+      .update({ promo_price: data.promo_price, promo_start: data.promo_start, promo_end: data.promo_end })
+      .eq('id', data.id);
+
+    if (error) {
+      if (error.message.includes('services_promo_check')) {
+        throw new Error('Le tarif promotionnel doit être inférieur au tarif habituel.');
+      }
+      throw new Error(error.message);
+    }
+    return { ok: true };
+  });
+
+/** Modifie le tarif ou la disponibilité d'une finition. */
+export const updateUpsell = createServerFn({ method: 'POST' })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: { id: string; price?: number; active?: boolean }) =>
+    z.object({
+      id: z.string().min(1).max(120),
+      price: z.number().nonnegative().max(100000).optional(),
+      active: z.boolean().optional(),
+    }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const { data: role } = await context.supabase
+      .from('user_roles').select('role').eq('user_id', context.userId).eq('role', 'admin').maybeSingle();
+    if (!role) throw new Error('Forbidden');
+
+    const patch: TablesUpdate<'service_upsells'> = {};
+    if (data.price !== undefined) patch.price = data.price;
+    if (data.active !== undefined) patch.active = data.active;
+    if (Object.keys(patch).length === 0) return { ok: true };
+
+    const { error } = await context.supabase.from('service_upsells').update(patch).eq('id', data.id);
+    if (error) throw new Error(error.message);
+    return { ok: true };
   });

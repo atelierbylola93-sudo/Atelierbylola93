@@ -4,6 +4,7 @@ import { HEAD_SPA_DATA } from '../data';
 import FaqSection from '../components/FaqSection';
 import LocalSeoSection from '../components/LocalSeoSection';
 import headspaHeroAsset from '../assets/headspa-hero.webp';
+import PrixVitrine from '../components/PrixVitrine';
 
 export default function HeadSpaView() {
   return (
@@ -124,7 +125,7 @@ export default function HeadSpaView() {
                       {formula.name}
                     </h3>
                     <span className="font-serif text-base font-medium text-[#A17E60] shrink-0 whitespace-nowrap">
-                      {formula.price} €
+                      <PrixVitrine nom={formula.name} prix={formula.price} />
                     </span>
                   </div>
 

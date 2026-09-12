@@ -18,14 +18,13 @@ import {
   ChevronDown,
 } from 'lucide-react';
 import { getAvailability, getAvailableSlots } from '@/lib/availability.functions';
-import { SERVICE_CATALOG, CATALOG_CATEGORIES, type CatalogService } from '@/lib/service-catalog';
+import { useCatalogue, useCategoriesCatalogue } from '@/lib/use-catalogue';
+import { formatJour, type PrestationAffichee } from '@/lib/catalogue';
 
-// Alias local pour lisibilité : la réservation consomme le catalogue partagé
-// (source de vérité = src/data.ts → src/lib/service-catalog.ts).
-type BookingService = CatalogService;
-
-const RESERVATION_SERVICES: BookingService[] = SERVICE_CATALOG;
-const CATEGORIES = CATALOG_CATEGORIES;
+// Le catalogue vient désormais de la base : ce que l'institut règle dans
+// l'espace patron s'affiche ici, promotions comprises. Le champ price porte
+// déjà le tarif du jour, donc tous les totaux restent justes sans changement.
+type BookingService = PrestationAffichee;
 
 // Design tokens conformes Apple HIG :
 // - min tap target 44px
@@ -45,6 +44,9 @@ const formatDuration = (mins: number) => {
 };
 
 export default function ReservationView() {
+  const RESERVATION_SERVICES = useCatalogue();
+  const CATEGORIES = useCategoriesCatalogue();
+
   const [step, setStep] = useState<number>(1);
   const [selectedServices, setSelectedServices] = useState<BookingService[]>([]);
   const [selectedUpsells, setSelectedUpsells] = useState<string[]>([]);
@@ -600,9 +602,23 @@ export default function ReservationView() {
                   </div>
 
                   <div className="flex flex-col items-end gap-2 shrink-0">
-                    <span className="font-serif text-lg md:text-xl font-bold whitespace-nowrap" style={{ color: GOLD }}>
-                      {service.priceOnQuote ? 'Sur devis' : `${service.price} €`}
-                    </span>
+                    <div className="flex flex-col items-end leading-none">
+                      {service.enPromo && service.prixBarre !== null && (
+                        <span className="text-sm text-gray-400 line-through">{service.prixBarre} €</span>
+                      )}
+                      <span
+                        className="font-serif text-lg md:text-xl font-bold whitespace-nowrap"
+                        style={{ color: service.enPromo ? '#9E2B25' : GOLD }}
+                      >
+                        {service.priceOnQuote ? 'Sur devis' : `${service.price} €`}
+                      </span>
+                    </div>
+                    {service.enPromo && service.remise !== null && (
+                      <span className="inline-flex items-center rounded-full bg-[#9E2B25] px-2 py-0.5 text-[11px] font-bold text-white whitespace-nowrap">
+                        −{service.remise} %
+                        {service.finPromo ? ` jusqu'au ${formatJour(service.finPromo)}` : ''}
+                      </span>
+                    )}
                     {service.priceNote && (
                       <span className="text-[10px] text-gray-500 italic text-right max-w-[140px] leading-tight">
                         {service.priceNote}

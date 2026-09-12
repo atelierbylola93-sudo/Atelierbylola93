@@ -2,6 +2,7 @@ import { motion } from 'motion/react';
 import { Calendar, CheckCircle2, ShieldAlert, Sparkles } from 'lucide-react';
 import { IPL_DATA, INSTITUT_INFO, LUXURY_IMAGES } from '../data';
 import FaqSection from '../components/FaqSection';
+import PrixVitrine from '../components/PrixVitrine';
 
 export default function IplView() {
   return (
@@ -74,7 +75,7 @@ export default function IplView() {
                       {item.name}
                     </h4>
                     <span className="font-serif text-lg font-bold text-[#B88F4D] shrink-0 whitespace-nowrap">
-                      {item.price} € <span className="text-[10px] text-gray-500 font-normal">/ séance</span>
+                      <PrixVitrine nom={item.name} prix={item.price} suffixe="/ séance" />
                     </span>
                   </div>
 

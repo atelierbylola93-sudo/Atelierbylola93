@@ -1,7 +1,7 @@
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState, useCallback } from 'react';
 import { useServerFn } from '@tanstack/react-start';
-import { CalendarDays, ListChecks, SlidersHorizontal, BarChart3, LogOut, Plus, RefreshCw } from 'lucide-react';
+import { CalendarDays, ListChecks, SlidersHorizontal, BarChart3, Tag, LogOut, Plus, RefreshCw } from 'lucide-react';
 import { Toaster } from '@/components/ui/sonner';
 import { toast } from 'sonner';
 import { supabase } from '@/integrations/supabase/client';
@@ -10,6 +10,7 @@ import { AgendaTab } from '@/components/admin/AgendaTab';
 import { ReservationsTab } from '@/components/admin/ReservationsTab';
 import { AvailabilityTab } from '@/components/admin/AvailabilityTab';
 import { StatsTab } from '@/components/admin/StatsTab';
+import { CatalogueTab } from '@/components/admin/CatalogueTab';
 import { ManualReservationDialog } from '@/components/admin/ManualReservationDialog';
 import type { AdminReservation } from '@/components/admin/types';
 
@@ -24,12 +25,13 @@ export const Route = createFileRoute('/admin')({
   component: AdminPage,
 });
 
-type TabKey = 'agenda' | 'reservations' | 'disponibilites' | 'stats';
+type TabKey = 'agenda' | 'reservations' | 'disponibilites' | 'tarifs' | 'stats';
 
 const TABS: { key: TabKey; label: string; icon: typeof CalendarDays }[] = [
   { key: 'agenda', label: 'Agenda', icon: CalendarDays },
   { key: 'reservations', label: 'Réservations', icon: ListChecks },
   { key: 'disponibilites', label: 'Disponibilités', icon: SlidersHorizontal },
+  { key: 'tarifs', label: 'Tarifs', icon: Tag },
   { key: 'stats', label: 'Statistiques', icon: BarChart3 },
 ];
 
@@ -225,6 +227,7 @@ function AdminPage() {
             />
           )}
           {tab === 'disponibilites' && <AvailabilityTab />}
+          {tab === 'tarifs' && <CatalogueTab />}
           {tab === 'stats' && <StatsTab />}
         </main>
       </div>
@@ -234,7 +237,7 @@ function AdminPage() {
         className="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-[#DDCCB2] shadow-[0_-8px_24px_rgba(42,36,28,0.06)]"
         style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
       >
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-5">
           {TABS.map((t) => {
             const Icon = t.icon;
             const active = tab === t.key;

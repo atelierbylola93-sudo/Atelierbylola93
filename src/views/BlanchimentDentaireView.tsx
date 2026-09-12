@@ -3,6 +3,7 @@ import { Calendar, CheckCircle2, Star, Sparkles, AlertTriangle, Info, Ban, Steth
 import { BLANCHIMENT_DENTAIRE_DATA, INSTITUT_INFO, LUXURY_IMAGES } from '../data';
 import FaqSection from '../components/FaqSection';
 import BlanchimentAvantApres from '../components/BlanchimentAvantApres';
+import PrixVitrine from '../components/PrixVitrine';
 
 export default function BlanchimentDentaireView() {
   return (
@@ -80,7 +81,7 @@ export default function BlanchimentDentaireView() {
                       {item.name}
                     </h4>
                     <span className="font-serif text-lg font-bold text-[#B88F4D] shrink-0 whitespace-nowrap">
-                      {item.price} €
+                      <PrixVitrine nom={item.name} prix={item.price} />
                     </span>
                   </div>
 
