@@ -83,7 +83,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
       description: "Relance instantanément la micro-circulation et l'élastine naturelle. Atténue visiblement les pores, ridules, cicatrices d'acné et insuffle un cocktail exclusif multivitaminé.",
       duration: "60 min",
       price: "160 €",
-      image: "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=800",
+      image: LUXURY_IMAGES.soinRegenerant,
       page: 'soins-visage' as Page,
     },
     {
@@ -137,7 +137,7 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
       effets: "★★★★★ (Profond)",
       duration: "60 min",
       price: "160 €",
-      image: "https://images.unsplash.com/photo-1512290923902-8a9f81dc236c?auto=format&fit=crop&q=80&w=800",
+      image: LUXURY_IMAGES.soinRegenerant,
       action: "soins-visage" as Page
     },
     {

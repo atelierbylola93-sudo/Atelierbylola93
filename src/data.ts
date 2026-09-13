@@ -48,6 +48,7 @@ export const LUXURY_IMAGES = {
   heroBg: 'https://images.unsplash.com/photo-1600334089648-b0d9d3028eb2?auto=format&fit=crop&q=80&w=1600', // Premium Spa bed with cream and gold vibes
   headSpa: headspaHeroAsset, // Japanese Head Spa treatment — uploaded asset
   hydraFacial: 'https://images.unsplash.com/photo-1570172619644-dfd03ed5d881?auto=format&fit=crop&q=80&w=1200', // Luxury glowy skin treatment
+  soinRegenerant: 'https://images.unsplash.com/photo-1761718210089-ba3bb5ccb54f?auto=format&fit=crop&q=80&w=1200', // Masque de soin applique en profil, palette creme
   aboutOwner: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?auto=format&fit=crop&q=80&w=1200', // Wellness specialist representation
   beauteRegard: 'https://images.unsplash.com/photo-1512496015851-a90fb38ba796?auto=format&fit=crop&q=80&w=1200', // Eyelash and brow macro aesthetic
   iplEpilation: iplEpilationImg, // Séance IPL luxe — palette crème/doré
