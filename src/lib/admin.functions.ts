@@ -367,7 +367,8 @@ export const createManualReservation = createServerFn({ method: 'POST' })
     }
     const openMin = toMinLocal(hoursRes.data.open_time as string);
     const closeMin = toMinLocal(hoursRes.data.close_time as string);
-    if (startMin < openMin || endMin > closeMin) {
+    // Seul le depart doit tomber dans les horaires ; la fin peut les depasser.
+    if (startMin < openMin || startMin > closeMin) {
       throw new Error('CONFLICT: hors horaires');
     }
     const conflicts: Array<[number, number]> = [];

@@ -94,7 +94,9 @@ export const Route = createFileRoute('/api/public/reservations')({
         const openMin = toMin(hoursRes.data.open_time as unknown as string);
         const closeMin = toMin(hoursRes.data.close_time as unknown as string);
 
-        if (start < openMin || end > closeMin) {
+        // Seul le depart doit tomber dans les horaires : un soin long commence
+        // en fin de journee et se termine apres la fermeture, ce qui est admis.
+        if (start < openMin || start > closeMin) {
           return Response.json({ error: 'Le créneau choisi est en dehors des horaires d’ouverture.' }, { status: 409 });
         }
 

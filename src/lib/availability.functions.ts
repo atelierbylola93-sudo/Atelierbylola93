@@ -204,7 +204,15 @@ export const getAvailableSlots = createServerFn({ method: 'GET' })
     });
 
     const slots: string[] = [];
-    for (let t = openMin; t + duration <= closeMin; t += SLOT_INTERVAL_MIN) {
+    // Les creneaux vont de l'ouverture a la fermeture, sans retrancher la duree
+    // du soin : l'institut est tenu par deux personnes, un soin long peut donc
+    // commencer en fin de journee et se terminer apres la fermeture. Seule
+    // l'heure de DEPART doit tomber dans les horaires.
+    //
+    // La detection de chevauchement, elle, garde la duree : elle reproduit la
+    // contrainte d'exclusion de la base. Si les deux divergeaient, le site
+    // proposerait un creneau que le serveur refuserait ensuite.
+    for (let t = openMin; t <= closeMin; t += SLOT_INTERVAL_MIN) {
       const end = t + duration;
       const conflict = busy.some(([bs, be]) => t < be && end > bs);
       if (!conflict) slots.push(toHHMM(t));
